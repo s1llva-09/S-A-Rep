@@ -1,0 +1,12 @@
+Coloque os PDFs de catálogo reais nesta pasta com os nomes abaixo.
+O site vai usar o PDF real automaticamente. Se o arquivo não existir,
+gera um PDF simples com os dados do sistema como fallback.
+
+Nomes esperados:
+  cometa-catalogo.pdf
+  unibreq-catalogo.pdf
+  fna-catalogo.pdf
+  motobatt-catalogo.pdf
+  gauss-catalogo.pdf
+  dura-race-catalogo.pdf
+  repool-catalogo.pdf
