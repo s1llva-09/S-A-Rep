@@ -112,10 +112,10 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
           </button>
 
           <div className="flex items-center gap-2">
-            <div className="hidden items-center gap-1 md:flex">
+            <div className="flex items-center gap-1">
               <button
                 onClick={scrollToMarcas}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer"
+                className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground cursor-pointer md:block"
               >
                 Marcas
               </button>
