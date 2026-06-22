@@ -3,7 +3,6 @@ import {
   ArrowRight,
   BadgeCheck,
   BriefcaseBusiness,
-  Building2,
   CheckCircle2,
   ChevronRight,
   Factory,
@@ -19,6 +18,7 @@ import {
 } from "lucide-react";
 import { brands, Brand } from "./data";
 import { ThemeToggle } from "./ThemeToggle";
+import { Footer } from "./Footer";
 import { SITE_CONFIG, getWhatsAppUrl } from "../config";
 
 interface AboutPageProps {
@@ -27,8 +27,8 @@ interface AboutPageProps {
 }
 
 const TEAM = [
-  { name: "Aline Brandrão", role: "Televendas", icon: Headphones },
-  { name: "Ana Paula", role: "SAC", icon: UserRound },
+  { name: "Aline Brandrão", role: "Televendas", icon: Headphones, phone: SITE_CONFIG.televendasNumber, phoneDisplay: SITE_CONFIG.televendasDisplay },
+  { name: "Ana Paula", role: "SAC", icon: UserRound, phone: SITE_CONFIG.sacNumber, phoneDisplay: SITE_CONFIG.sacDisplay },
 ];
 
 const STATES = [
@@ -69,7 +69,7 @@ const METRICS = [
 
 const COMMERCIAL_POINTS = [
   "Portfólio com marcas de alto giro no mercado de motopeças.",
-  "Atendimento voltado para lojas, oficinas e distribuidores.",
+  "Atendimento comercial voltado para o seu negócio.",
   "Consulta rápida a catálogos, linhas, lançamentos e aplicações.",
 ];
 
@@ -77,7 +77,7 @@ export function AboutPage({ onBack, onSelectBrand }: AboutPageProps) {
   const whatsappUrl = getWhatsAppUrl("Olá! Vim pelo site da S&A Representações e gostaria de mais informações.");
 
   return (
-    <div className="min-h-full bg-background pb-20 transition-colors duration-300">
+    <div className="min-h-full bg-background transition-colors duration-300">
       <div className="sticky top-0 z-30 border-b border-border bg-card/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
           <button
@@ -118,27 +118,20 @@ export function AboutPage({ onBack, onSelectBrand }: AboutPageProps) {
               A <strong className="font-bold text-foreground">S&A Representações</strong> conecta indústrias parceiras a
               revendas, oficinas e distribuidores no Nordeste, com atuação consultiva e foco em relacionamento comercial de longo prazo.
             </p>
-
-            <div className="mt-8 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
-              {METRICS.map((item) => (
-                <div key={item.label} className="rounded-lg border border-border bg-background p-5 shadow-sm">
-                  <p className="text-3xl font-black leading-none text-red-600">{item.value}</p>
-                  <p className="mt-2 text-xs font-black uppercase text-muted-foreground">{item.label}</p>
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className="rounded-lg border border-border bg-background p-6 text-center shadow-xl shadow-black/5">
-            <img
-              src="/assets/sa-logo.png"
-              alt="S&A Representações"
-              className="mx-auto aspect-square w-full max-w-[260px] object-contain"
-            />
+            <div className="mx-auto w-full max-w-[260px] rounded-lg bg-white p-5 shadow-sm">
+              <img
+                src="/assets/sa-logo.png"
+                alt="S&A Representações"
+                className="mx-auto aspect-square w-full object-contain"
+              />
+            </div>
             <div className="mt-6 border-t border-border pt-5">
               <p className="text-lg font-black text-foreground">Atendimento comercial</p>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Catálogos, pedidos e suporte para linhas de motopeças por WhatsApp.
+                Atendimento e suporte comercial para linhas de motopeças pelo WhatsApp.
               </p>
             </div>
           </div>
@@ -258,13 +251,22 @@ export function AboutPage({ onBack, onSelectBrand }: AboutPageProps) {
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {TEAM.map(({ name, role, icon: Icon }) => (
+            {TEAM.map(({ name, role, icon: Icon, phone, phoneDisplay }) => (
               <div key={name} className="rounded-lg border border-border bg-background p-6 shadow-sm">
                 <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-lg bg-red-500/10 text-red-600 dark:text-red-400">
                   <Icon className="h-5 w-5" />
                 </div>
                 <p className="text-lg font-black text-foreground">{name}</p>
                 <p className="mt-1 text-sm font-semibold text-muted-foreground">{role}</p>
+                <a
+                  href={`https://wa.me/${phone}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-red-600 transition-colors hover:text-red-700 dark:text-red-400"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  {phoneDisplay}
+                </a>
               </div>
             ))}
           </div>
@@ -280,10 +282,6 @@ export function AboutPage({ onBack, onSelectBrand }: AboutPageProps) {
             </div>
             <h2 className="text-3xl font-black text-foreground">Marcas representadas</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Portfólio comercial disponível para consulta.</p>
-          </div>
-          <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
-            <Building2 className="h-4 w-4 text-red-600" />
-            {brands.length} indústrias parceiras
           </div>
         </div>
 
@@ -324,7 +322,7 @@ export function AboutPage({ onBack, onSelectBrand }: AboutPageProps) {
         </div>
       </section>
 
-      <section className="bg-primary text-primary-foreground">
+      <section className="bg-[#15171D] text-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
             <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg border border-white/15 bg-white/10">
@@ -332,20 +330,22 @@ export function AboutPage({ onBack, onSelectBrand }: AboutPageProps) {
             </div>
             <h2 className="max-w-2xl text-3xl font-black sm:text-4xl">Fale com a S&A Representações</h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
-              Solicite catálogos, tire dúvidas sobre as indústrias representadas ou inicie seu pedido diretamente pelo WhatsApp.
+              Solicite atendimento, tire dúvidas sobre as indústrias representadas e fale com a gente diretamente pelo WhatsApp.
             </p>
           </div>
           <a
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-6 py-3.5 text-sm font-black text-primary shadow-lg transition-all hover:-translate-y-0.5 hover:bg-red-50 cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-6 py-3.5 text-sm font-black text-[#15171D] shadow-lg transition-all hover:-translate-y-0.5 hover:bg-red-50 cursor-pointer"
           >
             <MessageCircle className="h-4 w-4 text-green-600" />
             Entrar em contato
           </a>
         </div>
       </section>
+
+      <Footer onSelectBrand={onSelectBrand} />
     </div>
   );
 }

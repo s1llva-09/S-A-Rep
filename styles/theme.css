@@ -41,6 +41,7 @@
   --sidebar-ring: oklch(0.55 0.05 25);
   --page-tint: rgba(220, 38, 38, 0.035);
   --grid-line: rgba(21, 23, 29, 0.035);
+  --font-display: 'Archivo', 'Inter', system-ui, sans-serif;
 }
 
 .dark {
@@ -151,6 +152,18 @@
     font-size: var(--font-size);
   }
 
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+  }
+
+  h1, h2 {
+    letter-spacing: -0.025em;
+  }
+
+  h3, h4 {
+    letter-spacing: -0.015em;
+  }
+
   h1 {
     font-size: var(--text-2xl);
     font-weight: var(--font-weight-medium);
@@ -173,6 +186,13 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
+  }
+
+  /* Estados de foco visíveis e on-brand para navegação por teclado */
+  a,
+  button,
+  [role="button"] {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 
   label {

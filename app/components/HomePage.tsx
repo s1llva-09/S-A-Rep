@@ -4,13 +4,11 @@ import {
   BadgeCheck,
   BookOpen,
   BriefcaseBusiness,
-  Building2,
   CheckCircle2,
   ChevronRight,
   ClipboardList,
   Factory,
   Headphones,
-  MapPin,
   MessageCircle,
   PackageCheck,
   Route,
@@ -22,6 +20,7 @@ import { brands, Brand } from "./data";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { SITE_CONFIG, getWhatsAppUrl } from "../config";
 import { ThemeToggle } from "./ThemeToggle";
+import { Footer } from "./Footer";
 
 interface HomePageProps {
   onSelectBrand: (brand: Brand) => void;
@@ -43,7 +42,7 @@ const VALUE_PROPS = [
   {
     icon: Route,
     title: "Cobertura regional",
-    desc: "Atuação estruturada em Bahia, Sergipe, Alagoas e Pernambuco com atendimento próximo ao varejo.",
+    desc: "Atuação estruturada em Bahia, Sergipe, Alagoas e Pernambuco com atendimento comercial próximo.",
   },
   {
     icon: TrendingUp,
@@ -86,19 +85,6 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
 
   return (
     <div className="min-h-full bg-background transition-colors duration-300">
-      <div className="bg-primary text-primary-foreground">
-        <div className="mx-auto flex min-h-10 max-w-7xl items-center justify-center gap-3 px-4 text-center text-xs font-semibold sm:justify-between sm:px-6">
-          <span className="hidden items-center gap-2 sm:flex">
-            <BadgeCheck className="h-3.5 w-3.5 text-red-300" />
-            Representação comercial especializada em motopeças
-          </span>
-          <span className="flex items-center gap-2">
-            <MapPin className="h-3.5 w-3.5 text-red-300" />
-            Bahia, Sergipe, Alagoas e Pernambuco
-          </span>
-        </div>
-      </div>
-
       <nav className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur-md">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6">
           <button onClick={scrollToMarcas} className="flex min-w-0 items-center gap-3 text-left cursor-pointer">
@@ -166,10 +152,19 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Uma operação comercial preparada para conectar revendas, oficinas e distribuidores a{" "}
-              <strong className="font-bold text-foreground">{brands.length} indústrias parceiras</strong>, com
+              Uma operação comercial preparada para conectar seu negócio a{" "}
+              <strong className="font-bold text-foreground">grandes marcas do mercado de motopeças</strong>, com
               atendimento consultivo, catálogos atualizados e presença em quatro estados.
             </p>
+
+            <div className="mt-6 inline-flex items-center gap-3 rounded-lg border border-red-500/20 bg-red-500/5 py-2 pl-2 pr-4">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-red-600 text-white shadow-sm shadow-red-600/30">
+                <BadgeCheck className="h-5 w-5" />
+              </span>
+              <span className="text-sm font-semibold text-foreground">
+                <span className="font-black text-red-600 dark:text-red-500">Desde 2009</span> construindo parcerias de sucesso
+              </span>
+            </div>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <button
@@ -188,31 +183,6 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
                 <MessageCircle className="h-4 w-4 text-green-600" />
                 Solicitar atendimento
               </a>
-            </div>
-
-            <div className="mt-6 flex flex-wrap gap-2 sm:hidden">
-              {[
-                { value: String(brands.length), label: "indústrias" },
-                { value: "4", label: "estados" },
-                { value: "2009", label: "desde" },
-              ].map((metric) => (
-                <span key={metric.label} className="rounded-md border border-red-500/20 bg-card/80 px-3 py-2 text-xs font-black text-foreground shadow-sm">
-                  {metric.value} <span className="font-semibold text-muted-foreground">{metric.label}</span>
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-10 hidden max-w-2xl grid-cols-3 gap-3 sm:grid">
-              {[
-                { value: String(brands.length), label: "indústrias" },
-                { value: "4", label: "estados" },
-                { value: "2009", label: "desde" },
-              ].map((metric) => (
-                <div key={metric.label} className="border-l-2 border-red-500/35 pl-4">
-                  <p className="text-2xl font-black leading-none text-foreground sm:text-3xl">{metric.value}</p>
-                  <p className="mt-1 text-xs font-bold uppercase text-muted-foreground">{metric.label}</p>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -239,9 +209,9 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
 
               <div className="space-y-3 border-t border-border pt-5">
                 {[
-                  "Catálogos por indústria",
-                  "Linhas de alto giro para motopeças",
-                  "Contato comercial direto por WhatsApp",
+                  "Representação de marcas líderes do segmento",
+                  "Linhas completas de motopeças",
+                  "Cobertura comercial consultiva no Nordeste",
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-3 text-sm font-semibold text-foreground">
                     <CheckCircle2 className="h-4 w-4 shrink-0 text-green-600" />
@@ -254,7 +224,7 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
         </div>
       </section>
 
-      <section className="border-b border-border bg-primary text-primary-foreground">
+      <section className="border-b border-border bg-[#15171D] text-white">
         <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6">
           <div className="mb-5 flex items-center justify-between gap-4">
             <p className="text-xs font-black uppercase text-red-200">Indústrias representadas</p>
@@ -302,17 +272,10 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
                 <span className="h-px w-9 bg-red-500/50" />
                 Portfólio comercial
               </div>
-              <h2 className="text-3xl font-black text-foreground sm:text-4xl">Marcas fortes para lojas, oficinas e distribuidores</h2>
+              <h2 className="text-3xl font-black text-foreground sm:text-4xl">Grandes parceiros para seu negócio</h2>
               <p className="mt-3 text-base leading-relaxed text-muted-foreground">
                 Consulte cada indústria, veja produtos em destaque e acesse materiais comerciais para acelerar a compra.
               </p>
-            </div>
-            <div className="flex w-full items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 shadow-sm sm:w-auto">
-              <Building2 className="h-5 w-5 shrink-0 text-red-600" />
-              <div>
-                <p className="text-sm font-black text-foreground">{brands.length} indústrias parceiras</p>
-                <p className="text-xs text-muted-foreground">Portfólio atualizado para motopeças</p>
-              </div>
             </div>
           </div>
 
@@ -377,15 +340,17 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
                   </div>
 
                   <div className="mt-5 flex flex-wrap gap-2">
-                    {brand.featuredProducts.slice(0, 2).map((product) => (
-                      <span
-                        key={product.id}
-                        className="rounded-md border px-2.5 py-1 text-xs font-bold"
-                        style={{ borderColor: `${brand.color}25`, backgroundColor: `${brand.color}0f`, color: brand.color }}
-                      >
-                        {product.category}
-                      </span>
-                    ))}
+                    {Array.from(new Set(brand.featuredProducts.map((product) => product.category)))
+                      .slice(0, 2)
+                      .map((category) => (
+                        <span
+                          key={category}
+                          className="rounded-md border px-2.5 py-1 text-xs font-bold"
+                          style={{ borderColor: `${brand.color}25`, backgroundColor: `${brand.color}0f`, color: brand.color }}
+                        >
+                          {category}
+                        </span>
+                      ))}
                   </div>
 
                   <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
@@ -466,7 +431,7 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
         </div>
       </section>
 
-      <section className="bg-primary text-primary-foreground">
+      <section className="bg-[#15171D] text-white">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
             <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg border border-white/15 bg-white/10">
@@ -474,14 +439,14 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
             </div>
             <h2 className="max-w-2xl text-3xl font-black sm:text-4xl">Quer comprar melhor para sua loja ou oficina?</h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
-              Fale com a equipe comercial, solicite catálogos e conheça as linhas mais indicadas para o seu mix de motopeças.
+              Fale com a equipe comercial, solicite atendimento e conheça as linhas mais indicadas para o seu mix de motopeças.
             </p>
           </div>
           <a
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-6 py-3.5 text-sm font-black text-primary shadow-lg transition-all hover:-translate-y-0.5 hover:bg-red-50 cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-6 py-3.5 text-sm font-black text-[#15171D] shadow-lg transition-all hover:-translate-y-0.5 hover:bg-red-50 cursor-pointer"
           >
             <MessageCircle className="h-4 w-4 text-green-600" />
             Falar pelo WhatsApp
@@ -489,61 +454,7 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
         </div>
       </section>
 
-      <footer className="border-t border-border bg-card">
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
-            <div>
-              <div className="mb-5 flex items-center gap-3">
-                <span className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-lg border border-border bg-white shadow-sm">
-                  <img src="/assets/sa-logo.png" alt="S&A" className="h-10 w-10 object-contain" />
-                </span>
-                <div>
-                  <p className="text-sm font-black text-foreground">{SITE_CONFIG.companyName}</p>
-                  <p className="text-xs font-semibold text-muted-foreground">{SITE_CONFIG.shortDescription}</p>
-                </div>
-              </div>
-              <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
-                Representação comercial de motopeças para revendas, oficinas e distribuidores no Nordeste.
-              </p>
-            </div>
-
-            <div>
-              <p className="mb-4 text-xs font-black uppercase text-muted-foreground">Marcas</p>
-              <div className="grid grid-cols-2 gap-2">
-                {brands.map((brand) => (
-                  <button
-                    key={brand.id}
-                    onClick={() => onSelectBrand(brand)}
-                    className="flex items-center gap-2 text-left text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
-                  >
-                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: brand.color }} />
-                    {brand.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="mb-4 text-xs font-black uppercase text-muted-foreground">Atendimento</p>
-              <div className="space-y-3 text-sm text-muted-foreground">
-                <p className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-red-600" />
-                  BA, SE, AL e PE
-                </p>
-                <p className="flex items-center gap-2">
-                  <Headphones className="h-4 w-4 text-red-600" />
-                  Televendas e SAC
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-10 flex flex-col gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-            <p>© {new Date().getFullYear()} {SITE_CONFIG.companyName} Ltda. Todos os direitos reservados.</p>
-            <p>Catálogos, linhas e pedidos por atendimento comercial.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer onSelectBrand={onSelectBrand} />
     </div>
   );
 }

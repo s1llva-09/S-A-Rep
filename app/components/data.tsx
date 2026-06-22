@@ -67,11 +67,13 @@ const unibreqProducts = [
 
 const fnaProducts = [
   product("fna-1", "Amortecedor Titan 150/160", "FNA-TITAN", "Amortecedor traseiro para reposição direta nas principais motos de trabalho.", "/assets/products/fna-1.jpg", "Amortecedor"),
+  product("fna-7", "Garfo dianteiro Titan/Fan", "FNA-GARFTITAN", "Garfo dianteiro completo para reposição direta nas motos de trabalho.", IMG.suspension, "Garfo"),
   product("fna-2", "Amortecedor CB 300R", "FNA-CB300", "Reposição para trail e naked com amortecimento progressivo.", "/assets/products/fna-2.jpg", "Amortecedor"),
   product("fna-3", "Amortecedor XTZ 250 Lander", "FNA-XTZ250", "Linha para uso off-road e estrada com maior resistência.", "/assets/products/fna-3.jpg", "Suspensão"),
   product("fna-4", "Amortecedor NXR Bros 150", "FNA-BROS", "Aplicação específica para Bros, linha de alta demanda no Nordeste.", "/assets/products/fna-4.jpg", "Amortecedor"),
   product("fna-5", "Amortecedor XRE 300", "FNA-XRE", "Suspensão traseira para adventure com maior curso de amortecimento.", "/assets/products/fna-5.jpg", "Suspensão"),
   product("fna-6", "Amortecedor PCX 150", "FNA-PCX", "Reposição para scooter e motos de uso urbano intenso.", "/assets/products/fna-6.jpg", "Scooter"),
+  product("fna-8", "Garfo dianteiro CG 150/160", "FNA-GARFCG", "Garfo dianteiro para a linha CG, alta demanda em oficinas e revendas.", IMG.suspension, "Garfo"),
 ];
 
 const motobattProducts = [
@@ -93,21 +95,21 @@ const gaussProducts = [
 ];
 
 const duraRaceProducts = [
-  product("dur-1", "Biela Titan 150 — pino 15mm", "DUR-BIEL150", "Biela completa para reposição direta na Titan 150, com pino de 15mm.", "/assets/products/dura-race-1.jpg", "Biela"),
-  product("dur-2", "Induzido motor partida Titan 150", "DUR-IND280", "Induzido do motor de partida para Titan 150 — alta aplicabilidade.", "/assets/products/dura-race-2.jpg", "Induzido"),
-  product("dur-3", "Biela Titan 160 / NXR 160 / FAN 160", "DUR-BIEL160", "Reposição para os modelos mais novos da linha Honda 160cc.", "/assets/products/dura-race-3.jpg", "Biela"),
-  product("dur-4", "Biela CB 300 / XRE 300", "DUR-BIELCB", "Biela completa para trail e naked de 300cc.", "/assets/products/dura-race-4.jpg", "Biela"),
-  product("dur-5", "Biela Titan 150 ES/KS/ESD", "DUR-BIELKS", "Aplicação extensa para as versões mais comuns da Titan 150.", "/assets/products/dura-race-5.jpg", "Biela"),
-  product("dur-6", "Biela Fazer 150 / Crosser 150", "DUR-BIELFAZ", "Linha para motos Yamaha 150cc com ampla cobertura.", "/assets/products/dura-race-6.jpg", "Biela"),
+  product("dur-1", "Kit de parafusos de carenagem", "DUR-PARCAR", "Kit completo de parafusos para fixação de carenagem nas principais motos.", "/assets/products/dura-race-1.jpg", "Fixação"),
+  product("dur-2", "Parafusos e porcas de motor", "DUR-PARMOT", "Conjunto de parafusos e porcas para fixação de componentes do motor.", "/assets/products/dura-race-2.jpg", "Fixação"),
+  product("dur-3", "Abraçadeiras e presilhas", "DUR-ABRA", "Abraçadeiras e presilhas para fixação de mangueiras, cabos e chicotes.", "/assets/products/dura-race-3.jpg", "Fixação"),
+  product("dur-4", "Grampos de fixação de carenagem", "DUR-GRAMP", "Grampos e clipes para fixação rápida de carenagens e acabamentos.", "/assets/products/dura-race-4.jpg", "Fixação"),
+  product("dur-5", "Kit de fixação universal", "DUR-KITUNI", "Sortimento de parafusos, porcas e arruelas para uso geral em oficina.", "/assets/products/dura-race-5.jpg", "Fixação"),
+  product("dur-6", "Linha completa Dura Race", "DUR-CAT", "Catálogo completo e vasto da linha de fixação de motos.", "/assets/products/dura-race-6.jpg", "Catálogo"),
 ];
 
 const repoolProducts = [
-  product("rep-1", "Peças de reposição", "REP-PEC", "Linha para manutenção de motos de uso diário.", "/assets/products/repool-1.jpg", "Reposição"),
-  product("rep-2", "Componentes para motor", "REP-MOT", "Itens para oficinas e revendedores de motopeças.", "/assets/products/repool-2.jpg", "Motor"),
-  product("rep-3", "Kits de manutenção", "REP-KIT", "Produtos organizados para facilitar compra e revenda.", "/assets/products/repool-3.jpg", "Kit"),
-  product("rep-4", "Linha de transmissão", "REP-TRA", "Componentes para revisão e manutenção preventiva.", "/assets/products/repool-4.jpg", "Transmissão"),
-  product("rep-5", "Acessórios de reposição", "REP-ACE", "Peças de giro para atendimento comercial.", "/assets/products/repool-5.jpg", "Acessórios"),
-  product("rep-6", "Linha completa Repool", "REP-CAT", "Consulte o catálogo 2026 para aplicações atualizadas.", "/assets/products/repool-6.jpg", "Catálogo"),
+  product("rep-1", "Coxim do motor", "REP-COXIM", "Coxins injetados em borracha para fixação e amortecimento do motor.", "/assets/products/repool-1.jpg", "Borracha"),
+  product("rep-2", "Paralama e protetores plásticos", "REP-PARAL", "Peças injetadas em plástico para reposição de paralamas e protetores.", "/assets/products/repool-2.jpg", "Plástico"),
+  product("rep-3", "Borrachas e vedações", "REP-VEDA", "Linha de borrachas, coxins e vedações injetadas para diversos modelos.", "/assets/products/repool-3.jpg", "Borracha"),
+  product("rep-4", "Buchas e amortecedores de borracha", "REP-BUCHA", "Buchas e batentes injetados em borracha para suspensão e chassi.", "/assets/products/repool-4.jpg", "Borracha"),
+  product("rep-5", "Acabamentos e peças plásticas", "REP-PLAS", "Componentes injetados em plástico para acabamento e reposição.", "/assets/products/repool-5.jpg", "Plástico"),
+  product("rep-6", "Linha completa Repool", "REP-CAT", "Consulte o catálogo de produtos injetados em borracha e plástico.", "/assets/products/repool-6.jpg", "Catálogo"),
 ];
 
 export const brands: Brand[] = [
@@ -126,7 +128,7 @@ export const brands: Brand[] = [
     id: "unibreq",
     name: "UNIBREQ",
     tagline: "Freios e segurança",
-    description: "Marca reconhecida em freios para motos, com pastilhas, discos e itens de manutenção para o varejo de motopeças.",
+    description: "Marca reconhecida em freios para motos, com pastilhas, discos e itens de manutenção para o mercado de motopeças.",
     color: "#FFD100",
     logoText: "UNIBREQ",
     logo: "/assets/brands/unibreq.png",
@@ -136,8 +138,8 @@ export const brands: Brand[] = [
   {
     id: "fna",
     name: "FNA",
-    tagline: "Amortecedores para motos",
-    description: "Fábrica Nacional de Amortecedores: linha completa de amortecedores traseiros para as principais motocicletas do mercado nacional.",
+    tagline: "Amortecedores e garfos para motos",
+    description: "Fábrica Nacional de Amortecedores: linha completa de amortecedores traseiros e garfos dianteiros para as principais motocicletas do mercado nacional.",
     color: "#F47B20",
     logoText: "FNA",
     logo: "/assets/brands/fna.webp",
@@ -175,8 +177,8 @@ export const brands: Brand[] = [
   {
     id: "dura-race",
     name: "DURA RACE",
-    tagline: "Peças internas de motor",
-    description: "Linha de bielas, induzidos e componentes internos de motor para reposição nas principais motocicletas do mercado.",
+    tagline: "Linha de fixação para motos",
+    description: "Especialistas na linha de fixação de motos, com catálogo completo e vasto neste segmento.",
     color: "#E8540A",
     logoText: "DURA RACE",
     logo: "/assets/brands/dura-race.jpg",
@@ -186,8 +188,8 @@ export const brands: Brand[] = [
   {
     id: "repool",
     name: "REPOOL",
-    tagline: "Reposição para motos",
-    description: "Linha comercial de peças de reposição para lojas e oficinas, com catálogo atualizado para o mercado de motos.",
+    tagline: "Injetados em borracha e plástico",
+    description: "Especialistas em produtos injetados em borracha e plástico para o mercado de motos.",
     color: "#27AE60",
     logoText: "REPOOL",
     logo: "/assets/brands/repool.png",
