@@ -9,17 +9,27 @@ function safeFileName(value: string) {
     .toLowerCase();
 }
 
+function triggerDownload(url: string, brand: Brand) {
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `catalogo-${safeFileName(brand.name)}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
 async function tryStaticCatalog(brand: Brand): Promise<boolean> {
+  // 1) PDF vindo do Sanity (CMS), se houver.
+  if (brand.mainCatalogUrl) {
+    triggerDownload(brand.mainCatalogUrl, brand);
+    return true;
+  }
+  // 2) PDF estático em /public/catalogs/{id}-catalogo.pdf.
   const url = `/catalogs/${brand.id}-catalogo.pdf`;
   try {
     const res = await fetch(url, { method: "HEAD" });
     if (res.ok) {
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `catalogo-${safeFileName(brand.name)}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      triggerDownload(url, brand);
       return true;
     }
   } catch {}

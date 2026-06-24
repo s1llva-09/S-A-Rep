@@ -16,7 +16,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
-import { brands, Brand } from "./data";
+import { Brand } from "./data";
 import { ThemeToggle } from "./ThemeToggle";
 import { Footer } from "./Footer";
 import { SITE_CONFIG, getWhatsAppUrl } from "../config";
@@ -24,6 +24,7 @@ import { SITE_CONFIG, getWhatsAppUrl } from "../config";
 interface AboutPageProps {
   onBack: () => void;
   onSelectBrand: (brand: Brand) => void;
+  brands: Brand[];
 }
 
 const TEAM = [
@@ -61,19 +62,13 @@ const VALUES = [
   },
 ];
 
-const METRICS = [
-  { value: "2009", label: "ano de início" },
-  { value: String(brands.length), label: "indústrias" },
-  { value: String(STATES.length), label: "estados" },
-];
-
 const COMMERCIAL_POINTS = [
   "Portfólio com marcas de alto giro no mercado de motopeças.",
   "Atendimento comercial voltado para o seu negócio.",
   "Consulta rápida a catálogos, linhas, lançamentos e aplicações.",
 ];
 
-export function AboutPage({ onBack, onSelectBrand }: AboutPageProps) {
+export function AboutPage({ onBack, onSelectBrand, brands }: AboutPageProps) {
   const whatsappUrl = getWhatsAppUrl("Olá! Vim pelo site da S&A Representações e gostaria de mais informações.");
 
   return (
@@ -345,7 +340,7 @@ export function AboutPage({ onBack, onSelectBrand }: AboutPageProps) {
         </div>
       </section>
 
-      <Footer onSelectBrand={onSelectBrand} />
+      <Footer onSelectBrand={onSelectBrand} brands={brands} />
     </div>
   );
 }

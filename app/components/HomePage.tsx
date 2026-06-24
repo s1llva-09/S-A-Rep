@@ -16,7 +16,7 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import { brands, Brand } from "./data";
+import { Brand } from "./data";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { SITE_CONFIG, getWhatsAppUrl } from "../config";
 import { ThemeToggle } from "./ThemeToggle";
@@ -26,6 +26,7 @@ interface HomePageProps {
   onSelectBrand: (brand: Brand) => void;
   onNavigateAbout: () => void;
   scrollContainer: RefObject<HTMLDivElement | null>;
+  brands: Brand[];
 }
 
 const VALUE_PROPS = [
@@ -74,7 +75,7 @@ const STEPS = [
 
 const COVERAGE = ["Bahia", "Sergipe", "Alagoas", "Pernambuco"];
 
-export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
+export function HomePage({ onSelectBrand, onNavigateAbout, brands }: HomePageProps) {
   const scrollToMarcas = () => {
     document.getElementById("marcas")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -454,7 +455,7 @@ export function HomePage({ onSelectBrand, onNavigateAbout }: HomePageProps) {
         </div>
       </section>
 
-      <Footer onSelectBrand={onSelectBrand} />
+      <Footer onSelectBrand={onSelectBrand} brands={brands} />
     </div>
   );
 }
