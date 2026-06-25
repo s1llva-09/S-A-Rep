@@ -29,13 +29,8 @@ export interface Brand {
 }
 
 const IMG = {
+  // Placeholder usado nos garfos FNA até haver foto real.
   suspension: "https://images.unsplash.com/photo-1603137000613-6833a8002b69?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500",
-  brake: "https://images.unsplash.com/photo-1620600253422-2b87adc47eb1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500",
-  bearings: "https://images.unsplash.com/photo-1634071257121-8cd59787ff1c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500",
-  battery: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500",
-  electric: "https://images.unsplash.com/photo-1609630875289-22852fa678ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500",
-  performance: "https://images.unsplash.com/photo-1590507014612-08b6a0b4e31e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500",
-  parts: "https://images.unsplash.com/photo-1590506995460-d0d9892b54da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=500",
 };
 
 function product(
@@ -54,8 +49,6 @@ const cometaProducts = [
   product("com-2", "Manete CG/Titan/Fan", "COM-EMBCG", "Manete de embreagem para CG 92-95, Titan e Fan — alta aplicabilidade.", "/assets/products/cometa-2.png", "Manete"),
   product("com-3", "Manete cromado CBX/Twister/CB300", "COM-EMBCR", "Versão curta cromada para Twister, CB 300, XLR e XLS.", "/assets/products/cometa-3.png", "Manete"),
   product("com-4", "Manete YBR 125", "COM-EMBYBR", "Manete cromado curto para YBR 125, acabamento premium.", "/assets/products/cometa-4.png", "Manete"),
-  product("com-5", "Manete NX Sahara / XLX", "COM-EMBNX", "Manete curto cromado para NX Sahara 150/200 e XLX.", "/assets/products/cometa-5.png", "Manete"),
-  product("com-6", "Manete polido Titan 150", "COM-EMBPOL", "Versão polida para Titan 95/99/00 e Titan 150, peça de alto giro.", "/assets/products/cometa-6.png", "Manete"),
 ];
 
 const unibreqProducts = [
@@ -63,7 +56,6 @@ const unibreqProducts = [
   product("uni-2", "Discos de freio", "UNI-DISCO", "Discos para diferentes modelos e cilindradas.", "/assets/products/unibreq-2.jpg", "Disco"),
   product("uni-3", "Sistemas de freio", "UNI-FREIO", "Linha voltada para oficinas, lojas e distribuidores.", "/assets/products/unibreq-3.jpg", "Freios"),
   product("uni-4", "Kits de freio", "UNI-KIT", "Combinações para manutenção prática e venda consultiva.", "/assets/products/unibreq-4.jpg", "Kit"),
-  product("uni-5", "Sapatas de freio", "UNI-SAP", "Aplicações para motos de uso diário.", IMG.parts, "Sapata"),
 ];
 
 const fnaProducts = [
@@ -71,10 +63,6 @@ const fnaProducts = [
   product("fna-7", "Garfo dianteiro Titan/Fan", "FNA-GARFTITAN", "Garfo dianteiro completo para reposição direta nas motos de trabalho.", IMG.suspension, "Garfo"),
   product("fna-2", "Amortecedor CB 300R", "FNA-CB300", "Reposição para trail e naked com amortecimento progressivo.", "/assets/products/fna-2.jpg", "Amortecedor"),
   product("fna-3", "Amortecedor XTZ 250 Lander", "FNA-XTZ250", "Linha para uso off-road e estrada com maior resistência.", "/assets/products/fna-3.jpg", "Suspensão"),
-  product("fna-4", "Amortecedor NXR Bros 150", "FNA-BROS", "Aplicação específica para Bros, linha de alta demanda no Nordeste.", "/assets/products/fna-4.jpg", "Amortecedor"),
-  product("fna-5", "Amortecedor XRE 300", "FNA-XRE", "Suspensão traseira para adventure com maior curso de amortecimento.", "/assets/products/fna-5.jpg", "Suspensão"),
-  product("fna-6", "Amortecedor PCX 150", "FNA-PCX", "Reposição para scooter e motos de uso urbano intenso.", "/assets/products/fna-6.jpg", "Scooter"),
-  product("fna-8", "Garfo dianteiro CG 150/160", "FNA-GARFCG", "Garfo dianteiro para a linha CG, alta demanda em oficinas e revendas.", IMG.suspension, "Garfo"),
 ];
 
 const motobattProducts = [
@@ -82,8 +70,6 @@ const motobattProducts = [
   product("mot-2", "Bateria MBTX 12U — vista posterior", "MOT-MBTX12B", "Reposição prática com QuadFlex para facilitar a instalação em oficinas.", "/assets/products/motobatt-2.jpg", "AGM"),
   product("mot-3", "Bateria MBTX 9U AGM", "MOT-MBTX9", "Linha para naked e esportivas, com alta demanda de partida e vida útil superior.", "/assets/products/motobatt-3.jpg", "AGM"),
   product("mot-4", "Bateria MTZ 6S selada", "MOT-MTZ6", "Bateria selada compacta para motos de menor cilindrada.", "/assets/products/motobatt-4.jpg", "Selada"),
-  product("mot-5", "Bateria MTZ 5BR", "MOT-MTZ5", "Modelo de alto giro para motos urbanas e entregadores.", "/assets/products/motobatt-5.jpg", "Selada"),
-  product("mot-6", "Bateria MTX 9A", "MOT-MTX9", "Opção de custo-benefício para oficinas com ampla cobertura de aplicação.", "/assets/products/motobatt-6.jpg", "AGM"),
 ];
 
 const gaussProducts = [
@@ -91,7 +77,6 @@ const gaussProducts = [
   product("gau-2", "Retificadores", "GAU-RET", "Linha para manutenção do sistema de carga.", "/assets/products/gauss-retificador.webp", "Retificador"),
   product("gau-3", "Relés e sensores", "GAU-REL", "Aplicações para diagnóstico e correção elétrica.", "/assets/products/gauss-rele.webp", "Sensor"),
   product("gau-4", "Bobinas de ignição", "GAU-BOB", "Peças para estabilidade de partida e funcionamento.", "/assets/products/gauss-bobina.webp", "Ignição"),
-  product("gau-5", "Linha de iluminação", "GAU-LUZ", "Itens elétricos para reposição e manutenção.", "/assets/products/gauss-lampada.webp", "Iluminação"),
 ];
 
 const duraRaceProducts = [
@@ -99,7 +84,6 @@ const duraRaceProducts = [
   product("dur-2", "Parafusos e porcas de motor", "DUR-PARMOT", "Conjunto de parafusos e porcas para fixação de componentes do motor.", "/assets/products/dura-race-2.jpg", "Fixação"),
   product("dur-3", "Abraçadeiras e presilhas", "DUR-ABRA", "Abraçadeiras e presilhas para fixação de mangueiras, cabos e chicotes.", "/assets/products/dura-race-3.jpg", "Fixação"),
   product("dur-4", "Grampos de fixação de carenagem", "DUR-GRAMP", "Grampos e clipes para fixação rápida de carenagens e acabamentos.", "/assets/products/dura-race-4.jpg", "Fixação"),
-  product("dur-5", "Kit de fixação universal", "DUR-KITUNI", "Sortimento de parafusos, porcas e arruelas para uso geral em oficina.", "/assets/products/dura-race-5.jpg", "Fixação"),
 ];
 
 const repoolProducts = [
@@ -107,7 +91,6 @@ const repoolProducts = [
   product("rep-2", "Paralama e protetores plásticos", "REP-PARAL", "Peças injetadas em plástico para reposição de paralamas e protetores.", "/assets/products/repool-2.jpg", "Plástico"),
   product("rep-3", "Borrachas e vedações", "REP-VEDA", "Linha de borrachas, coxins e vedações injetadas para diversos modelos.", "/assets/products/repool-3.jpg", "Borracha"),
   product("rep-4", "Buchas e amortecedores de borracha", "REP-BUCHA", "Buchas e batentes injetados em borracha para suspensão e chassi.", "/assets/products/repool-4.jpg", "Borracha"),
-  product("rep-5", "Acabamentos e peças plásticas", "REP-PLAS", "Componentes injetados em plástico para acabamento e reposição.", "/assets/products/repool-5.jpg", "Plástico"),
 ];
 
 // Conteúdo de fallback: usado enquanto o Supabase não está configurado
