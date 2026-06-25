@@ -1,5 +1,17 @@
 import { useEffect, useState } from "react";
-import { Plus, LogOut, ExternalLink, Trash2, ArrowUp, ArrowDown, Save, Loader2 } from "lucide-react";
+import {
+  Plus,
+  LogOut,
+  ExternalLink,
+  Trash2,
+  ArrowUp,
+  ArrowDown,
+  Save,
+  Loader2,
+  ImagePlus,
+  PackageOpen,
+  Boxes,
+} from "lucide-react";
 import { toast } from "./toast";
 import { supabase } from "../supabase/client";
 import { BrandRow, ProductRow } from "../supabase/types";
@@ -13,13 +25,31 @@ import {
   STORAGE,
 } from "./AdminApp";
 
+// ---- Sistema de estilos (tokens visuais) ----
+const card =
+  "rounded-xl border border-border bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_16px_32px_-22px_rgba(0,0,0,0.20)]";
 const inputCls =
-  "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring";
-const labelCls = "mb-1 block text-xs font-bold text-muted-foreground";
+  "w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground transition-colors placeholder:text-muted-foreground hover:border-foreground/20 focus:border-red-500/50 focus:outline-none focus:ring-4 focus:ring-red-500/10";
+const labelCls = "mb-1.5 block text-xs font-bold uppercase tracking-wide text-muted-foreground";
+const btnPrimary =
+  "inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-black text-white shadow-sm shadow-red-600/25 transition-all hover:bg-red-700 hover:-translate-y-px active:translate-y-0 disabled:opacity-60 disabled:hover:translate-y-0";
+const btnGhost =
+  "inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-bold text-foreground transition-colors hover:bg-secondary";
+const btnDanger =
+  "inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-bold text-red-600 transition-colors hover:border-red-300 hover:bg-red-50 dark:hover:border-red-900/60 dark:hover:bg-red-950/30";
 
 // Limites de tamanho de upload (plano grátis do Supabase aceita até ~50 MB por arquivo).
 const MAX_PDF_MB = 50;
 const MAX_IMG_MB = 25;
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mb-4 flex items-center gap-3 text-xs font-black uppercase tracking-wider text-red-600 dark:text-red-400">
+      <span className="h-px w-6 bg-red-500/40" />
+      {children}
+    </div>
+  );
+}
 
 export function Dashboard() {
   const [brands, setBrands] = useState<BrandRow[]>([]);
@@ -58,6 +88,7 @@ export function Dashboard() {
     await saveBrand(row);
     await refresh();
     setSelectedId(id);
+    toast.success("Marca criada.");
   };
 
   const selected = brands.find((b) => b.id === selectedId) ?? null;
@@ -66,44 +97,63 @@ export function Dashboard() {
     .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
+    <div className="flex h-screen overflow-hidden bg-background text-foreground">
       {/* Sidebar */}
-      <aside className="flex w-64 shrink-0 flex-col border-r border-border bg-card">
-        <div className="flex items-center gap-2 border-b border-border p-4">
-          <img src="/assets/sa-logo.png" alt="S&A" className="h-8 w-8 object-contain" />
-          <span className="font-black">Painel S&A</span>
+      <aside className="flex h-full w-64 shrink-0 flex-col border-r border-border bg-card">
+        <div className="flex items-center gap-3 border-b border-border px-4 py-4">
+          <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-border bg-white shadow-sm">
+            <img src="/assets/sa-logo.png" alt="S&A" className="h-8 w-8 object-contain" />
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-black leading-tight">Painel S&A</p>
+            <p className="truncate text-xs text-muted-foreground">Conteúdo do site</p>
+          </div>
         </div>
-        <div className="flex-1 overflow-y-auto p-3">
-          <p className="mb-2 px-2 text-xs font-black uppercase text-muted-foreground">Marcas</p>
-          {brands.map((b) => (
-            <button
-              key={b.id}
-              onClick={() => setSelectedId(b.id)}
-              className={`mb-1 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-colors ${
-                b.id === selectedId ? "bg-secondary text-foreground" : "text-muted-foreground hover:bg-secondary/60"
-              }`}
-            >
-              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: b.color ?? "#999" }} />
-              <span className="truncate">{b.name}</span>
-            </button>
-          ))}
+
+        <div className="flex-1 overflow-y-auto px-3 py-4">
+          <p className="mb-2 px-2 text-[11px] font-black uppercase tracking-wider text-muted-foreground">
+            Marcas
+          </p>
+          <div className="space-y-0.5">
+            {brands.map((b) => {
+              const active = b.id === selectedId;
+              return (
+                <button
+                  key={b.id}
+                  onClick={() => setSelectedId(b.id)}
+                  className={`group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-semibold transition-all ${
+                    active
+                      ? "bg-secondary text-foreground"
+                      : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
+                  }`}
+                >
+                  {active && (
+                    <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-red-600" />
+                  )}
+                  <span
+                    className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-offset-1 ring-offset-card transition"
+                    style={{ backgroundColor: b.color ?? "#999", boxShadow: active ? `0 0 0 1px ${b.color ?? "#999"}` : undefined, ["--tw-ring-color" as string]: `${b.color ?? "#999"}40` }}
+                  />
+                  <span className="truncate">{b.name}</span>
+                </button>
+              );
+            })}
+          </div>
           <button
             onClick={addBrand}
-            className="mt-2 flex w-full items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-sm font-bold text-muted-foreground hover:bg-secondary/60"
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-border px-3 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:border-red-400/50 hover:bg-secondary/60 hover:text-foreground"
           >
             <Plus className="h-4 w-4" /> Nova marca
           </button>
         </div>
-        <div className="border-t border-border p-3">
-          <a
-            href="/"
-            className="mb-1 flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-secondary/60"
-          >
+
+        <div className="space-y-0.5 border-t border-border p-3">
+          <a href="/" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-secondary/60 hover:text-foreground">
             <ExternalLink className="h-4 w-4" /> Ver site
           </a>
           <button
             onClick={() => supabase?.auth.signOut()}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-secondary/60"
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-secondary/60 hover:text-foreground"
           >
             <LogOut className="h-4 w-4" /> Sair
           </button>
@@ -111,19 +161,24 @@ export function Dashboard() {
       </aside>
 
       {/* Main */}
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto">
         {loading ? (
-          <div className="grid h-full place-items-center text-sm text-muted-foreground">Carregando…</div>
-        ) : selected ? (
-          <BrandEditor
-            key={selected.id}
-            brand={selected}
-            products={brandProducts}
-            onSaved={refresh}
-          />
-        ) : (
           <div className="grid h-full place-items-center text-sm text-muted-foreground">
-            Crie a primeira marca para começar.
+            <span className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" /> Carregando…
+            </span>
+          </div>
+        ) : selected ? (
+          <BrandEditor key={selected.id} brand={selected} products={brandProducts} onSaved={refresh} />
+        ) : (
+          <div className="grid h-full place-items-center p-6 text-center">
+            <div className="max-w-xs">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary text-muted-foreground">
+                <Boxes className="h-7 w-7" />
+              </div>
+              <p className="text-base font-black text-foreground">Nenhuma marca ainda</p>
+              <p className="mt-1 text-sm text-muted-foreground">Clique em “Nova marca” na barra lateral para começar.</p>
+            </div>
           </div>
         )}
       </main>
@@ -160,6 +215,17 @@ function BrandEditor({
       toast.error("Não foi possível salvar a marca. Tente novamente.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm(`Excluir a marca "${form.name}" e TODOS os seus produtos? Esta ação não pode ser desfeita.`)) return;
+    try {
+      await deleteBrandRow(brand.id);
+      await onSaved();
+      toast.success("Marca excluída.");
+    } catch {
+      toast.error("Erro ao excluir a marca.");
     }
   };
 
@@ -221,171 +287,194 @@ function BrandEditor({
   };
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-black">{form.name || "Marca"}</h1>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={async () => {
-              if (!confirm(`Excluir a marca "${form.name}" e TODOS os seus produtos? Esta ação não pode ser desfeita.`)) return;
-              try {
-                await deleteBrandRow(brand.id);
-                await onSaved();
-                toast.success("Marca excluída.");
-              } catch {
-                toast.error("Erro ao excluir a marca.");
-              }
-            }}
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
-          >
-            <Trash2 className="h-4 w-4" />
-            Excluir marca
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-black text-white hover:bg-red-700 disabled:opacity-60"
-          >
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            Salvar marca
-          </button>
-        </div>
-      </div>
-
-      <section className="grid gap-4 rounded-xl border border-border bg-card p-5">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className={labelCls}>Nome</label>
-            <input className={inputCls} value={form.name} onChange={(e) => set({ name: e.target.value })} />
-          </div>
-          <div>
-            <label className={labelCls}>Subtítulo (tagline)</label>
-            <input className={inputCls} value={form.tagline ?? ""} onChange={(e) => set({ tagline: e.target.value })} />
-          </div>
-        </div>
-
-        <div>
-          <label className={labelCls}>Descrição</label>
-          <textarea
-            className={inputCls}
-            rows={3}
-            value={form.description ?? ""}
-            onChange={(e) => set({ description: e.target.value })}
-          />
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div>
-            <label className={labelCls}>Cor (hex)</label>
-            <div className="flex items-center gap-2">
-              <input
-                type="color"
-                value={form.color ?? "#DB2020"}
-                onChange={(e) => set({ color: e.target.value })}
-                className="h-9 w-10 shrink-0 rounded border border-border bg-background"
-              />
-              <input className={inputCls} value={form.color ?? ""} onChange={(e) => set({ color: e.target.value })} />
-            </div>
-          </div>
-          <div>
-            <label className={labelCls}>Fundo do logo (opcional)</label>
-            <input className={inputCls} value={form.logo_bg ?? ""} onChange={(e) => set({ logo_bg: e.target.value })} />
-          </div>
-          <div>
-            <label className={labelCls}>Ordem</label>
-            <input
-              type="number"
-              className={inputCls}
-              value={form.sort_order ?? 0}
-              onChange={(e) => set({ sort_order: Number(e.target.value) })}
+    <>
+      {/* Toolbar fixa */}
+      <div className="sticky top-0 z-10 border-b border-border bg-card/85 backdrop-blur-md">
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-6 py-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <span
+              className="h-3 w-3 shrink-0 rounded-full"
+              style={{ backgroundColor: form.color ?? "#999" }}
             />
+            <h1 className="truncate text-xl font-black tracking-tight">{form.name || "Marca"}</h1>
           </div>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label className={labelCls}>Logo</label>
-            <div className="flex items-center gap-3">
-              {form.logo_url && (
-                <img src={form.logo_url} alt="logo" className="h-12 w-12 rounded border border-border bg-white object-contain p-1" />
-              )}
-              <FileButton accept="image/*" busy={busy === "logo"} onPick={uploadLogo} label="Trocar logo" maxMB={MAX_IMG_MB} />
-            </div>
-          </div>
-          <div>
-            <label className={labelCls}>Catálogo principal (PDF)</label>
-            <div className="flex items-center gap-3">
-              {form.main_catalog_url && (
-                <a href={form.main_catalog_url} target="_blank" rel="noreferrer" className="text-xs font-bold text-red-600 underline">
-                  ver atual
-                </a>
-              )}
-              <FileButton accept="application/pdf" busy={busy === "catalog"} onPick={uploadMainCatalog} label="Trocar PDF" maxMB={MAX_PDF_MB} />
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">Tamanho máximo: {MAX_PDF_MB} MB.</p>
-          </div>
-        </div>
-
-        {/* Catálogos extras */}
-        <div>
-          <label className={labelCls}>Catálogos extras</label>
-          <div className="space-y-2">
-            {(form.extra_catalogs ?? []).map((c, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <input
-                  className={inputCls}
-                  placeholder="Rótulo (ex: Lançamentos Maio)"
-                  value={c.label}
-                  onChange={(e) => updateExtra(i, { label: e.target.value })}
-                />
-                {c.file ? (
-                  <a href={c.file} target="_blank" rel="noreferrer" className="shrink-0 text-xs font-bold text-red-600 underline">
-                    ver
-                  </a>
-                ) : null}
-                <FileButton
-                  accept="application/pdf"
-                  small
-                  maxMB={MAX_PDF_MB}
-                  onPick={async (file) => {
-                    const url = await uploadToBucket(STORAGE.catalogs, file);
-                    updateExtra(i, { file: url });
-                  }}
-                  label="PDF"
-                />
-                <button onClick={() => removeExtra(i)} className="shrink-0 rounded-lg p-2 text-muted-foreground hover:bg-secondary">
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
-            <button onClick={addExtra} className="inline-flex items-center gap-1.5 text-sm font-bold text-red-600">
-              <Plus className="h-4 w-4" /> Adicionar catálogo extra
+          <div className="flex shrink-0 items-center gap-2">
+            <button onClick={handleDelete} className={btnDanger}>
+              <Trash2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Excluir</span>
+            </button>
+            <button onClick={handleSave} disabled={saving} className={btnPrimary}>
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              Salvar marca
             </button>
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">Lembre de clicar em “Salvar marca” após adicionar/editar.</p>
         </div>
-      </section>
+      </div>
 
-      {/* Produtos */}
-      <div className="mb-3 mt-8 flex items-center justify-between">
-        <h2 className="text-lg font-black">Produtos ({products.length})</h2>
-        <button onClick={addProduct} className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-bold hover:bg-secondary">
-          <Plus className="h-4 w-4" /> Novo produto
-        </button>
+      <div className="mx-auto max-w-3xl px-6 py-8">
+        {/* Identidade */}
+        <section className={`${card} p-6`}>
+          <SectionLabel>Identidade</SectionLabel>
+          <div className="grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className={labelCls}>Nome</label>
+                <input className={inputCls} value={form.name} onChange={(e) => set({ name: e.target.value })} />
+              </div>
+              <div>
+                <label className={labelCls}>Subtítulo (tagline)</label>
+                <input className={inputCls} value={form.tagline ?? ""} onChange={(e) => set({ tagline: e.target.value })} />
+              </div>
+            </div>
+
+            <div>
+              <label className={labelCls}>Descrição</label>
+              <textarea
+                className={inputCls}
+                rows={3}
+                value={form.description ?? ""}
+                onChange={(e) => set({ description: e.target.value })}
+              />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div>
+                <label className={labelCls}>Cor da marca</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={form.color ?? "#DB2020"}
+                    onChange={(e) => set({ color: e.target.value })}
+                    className="h-10 w-12 shrink-0 cursor-pointer rounded-lg border border-border bg-background p-1"
+                  />
+                  <input className={inputCls} value={form.color ?? ""} onChange={(e) => set({ color: e.target.value })} />
+                </div>
+              </div>
+              <div>
+                <label className={labelCls}>Fundo do logo</label>
+                <input className={inputCls} placeholder="opcional" value={form.logo_bg ?? ""} onChange={(e) => set({ logo_bg: e.target.value })} />
+              </div>
+              <div>
+                <label className={labelCls}>Ordem no site</label>
+                <input
+                  type="number"
+                  className={inputCls}
+                  value={form.sort_order ?? 0}
+                  onChange={(e) => set({ sort_order: Number(e.target.value) })}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Mídia */}
+        <section className={`${card} mt-5 p-6`}>
+          <SectionLabel>Logo e catálogo</SectionLabel>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label className={labelCls}>Logo</label>
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border"
+                  style={{ backgroundColor: form.logo_bg || "white" }}
+                >
+                  {form.logo_url ? (
+                    <img src={form.logo_url} alt="logo" className="h-full w-full object-contain p-1.5" />
+                  ) : (
+                    <ImagePlus className="h-5 w-5 text-muted-foreground" />
+                  )}
+                </div>
+                <FileButton accept="image/*" busy={busy === "logo"} onPick={uploadLogo} label="Trocar logo" maxMB={MAX_IMG_MB} />
+              </div>
+            </div>
+            <div>
+              <label className={labelCls}>Catálogo principal (PDF)</label>
+              <div className="flex items-center gap-3">
+                <FileButton accept="application/pdf" busy={busy === "catalog"} onPick={uploadMainCatalog} label="Trocar PDF" maxMB={MAX_PDF_MB} />
+                {form.main_catalog_url && (
+                  <a href={form.main_catalog_url} target="_blank" rel="noreferrer" className="text-xs font-bold text-red-600 hover:underline">
+                    ver atual
+                  </a>
+                )}
+              </div>
+              <p className="mt-1.5 text-xs text-muted-foreground">Tamanho máximo: {MAX_PDF_MB} MB.</p>
+            </div>
+          </div>
+
+          {/* Catálogos extras */}
+          <div className="mt-6 border-t border-border pt-5">
+            <label className={labelCls}>Catálogos extras (lançamentos)</label>
+            <div className="space-y-2">
+              {(form.extra_catalogs ?? []).map((c, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <input
+                    className={inputCls}
+                    placeholder="Rótulo (ex: Lançamentos Maio)"
+                    value={c.label}
+                    onChange={(e) => updateExtra(i, { label: e.target.value })}
+                  />
+                  {c.file ? (
+                    <a href={c.file} target="_blank" rel="noreferrer" className="shrink-0 text-xs font-bold text-red-600 hover:underline">
+                      ver
+                    </a>
+                  ) : null}
+                  <FileButton
+                    accept="application/pdf"
+                    small
+                    maxMB={MAX_PDF_MB}
+                    onPick={async (file) => {
+                      const url = await uploadToBucket(STORAGE.catalogs, file);
+                      updateExtra(i, { file: url });
+                    }}
+                    label="PDF"
+                  />
+                  <button
+                    onClick={() => removeExtra(i)}
+                    className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/30"
+                    aria-label="Remover catálogo extra"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+              <button onClick={addExtra} className="inline-flex items-center gap-1.5 text-sm font-bold text-red-600 hover:text-red-700">
+                <Plus className="h-4 w-4" /> Adicionar catálogo extra
+              </button>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">Após adicionar/editar os extras, clique em “Salvar marca”.</p>
+          </div>
+        </section>
+
+        {/* Produtos */}
+        <div className="mb-3 mt-8 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <PackageOpen className="h-5 w-5 text-red-600" />
+            <h2 className="text-lg font-black tracking-tight">Produtos</h2>
+            <span className="rounded-full bg-secondary px-2 py-0.5 text-xs font-bold text-muted-foreground">{products.length}</span>
+          </div>
+          <button onClick={addProduct} className={btnGhost}>
+            <Plus className="h-4 w-4" /> Novo produto
+          </button>
+        </div>
+        <div className="space-y-3">
+          {products.map((p, idx) => (
+            <ProductCard
+              key={p.id}
+              product={p}
+              isFirst={idx === 0}
+              isLast={idx === products.length - 1}
+              siblings={products}
+              onSaved={onSaved}
+            />
+          ))}
+          {products.length === 0 && (
+            <div className={`${card} grid place-items-center p-10 text-center`}>
+              <p className="text-sm text-muted-foreground">Nenhum produto ainda. Clique em “Novo produto”.</p>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="space-y-3">
-        {products.map((p, idx) => (
-          <ProductCard
-            key={p.id}
-            product={p}
-            isFirst={idx === 0}
-            isLast={idx === products.length - 1}
-            siblings={products}
-            onSaved={onSaved}
-          />
-        ))}
-      </div>
-    </div>
+    </>
   );
 }
 
@@ -465,11 +554,15 @@ function ProductCard({
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
+    <div className={`${card} p-4 transition-shadow hover:shadow-[0_1px_2px_rgba(0,0,0,0.04),0_22px_40px_-24px_rgba(0,0,0,0.28)]`}>
       <div className="flex gap-4">
         <div className="flex shrink-0 flex-col items-center gap-2">
-          <div className="h-20 w-20 overflow-hidden rounded-lg border border-border bg-white">
-            {form.image_url && <img src={form.image_url} alt={form.name} className="h-full w-full object-contain p-1" />}
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-border bg-white">
+            {form.image_url ? (
+              <img src={form.image_url} alt={form.name} className="h-full w-full object-contain p-1" />
+            ) : (
+              <ImagePlus className="h-5 w-5 text-muted-foreground" />
+            )}
           </div>
           <FileButton accept="image/*" small busy={busy} onPick={uploadImage} label="Foto" maxMB={MAX_IMG_MB} />
         </div>
@@ -494,18 +587,32 @@ function ProductCard({
       </div>
       <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
         <div className="flex gap-1">
-          <button disabled={isFirst} onClick={() => move(-1)} className="rounded-lg p-2 text-muted-foreground hover:bg-secondary disabled:opacity-30">
+          <button
+            disabled={isFirst}
+            onClick={() => move(-1)}
+            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-30 disabled:hover:bg-transparent"
+            aria-label="Mover para cima"
+          >
             <ArrowUp className="h-4 w-4" />
           </button>
-          <button disabled={isLast} onClick={() => move(1)} className="rounded-lg p-2 text-muted-foreground hover:bg-secondary disabled:opacity-30">
+          <button
+            disabled={isLast}
+            onClick={() => move(1)}
+            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-30 disabled:hover:bg-transparent"
+            aria-label="Mover para baixo"
+          >
             <ArrowDown className="h-4 w-4" />
           </button>
         </div>
         <div className="flex gap-2">
-          <button onClick={remove} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30">
+          <button onClick={remove} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-950/30">
             <Trash2 className="h-4 w-4" /> Excluir
           </button>
-          <button onClick={save} disabled={saving} className="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-4 py-2 text-sm font-black text-background disabled:opacity-60">
+          <button
+            onClick={save}
+            disabled={saving}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-4 py-2 text-sm font-black text-background transition-all hover:-translate-y-px active:translate-y-0 disabled:opacity-60 disabled:hover:translate-y-0"
+          >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Salvar
           </button>
         </div>
@@ -531,11 +638,11 @@ function FileButton({
 }) {
   return (
     <label
-      className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-border font-bold hover:bg-secondary ${
-        small ? "px-2.5 py-1.5 text-xs" : "px-3 py-2 text-sm"
+      className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-border bg-card font-bold text-foreground transition-colors hover:border-foreground/20 hover:bg-secondary ${
+        small ? "px-2.5 py-1.5 text-xs" : "px-3.5 py-2 text-sm"
       }`}
     >
-      {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+      {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className={small ? "h-3.5 w-3.5" : "h-4 w-4"} />}
       {label}
       <input
         type="file"
