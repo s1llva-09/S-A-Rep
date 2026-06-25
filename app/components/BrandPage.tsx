@@ -133,8 +133,10 @@ export function BrandPage({ brand, onBack }: BrandPageProps) {
             <div className="grid grid-cols-2 gap-3 pt-5">
               <div className="rounded-lg border border-border bg-card p-4">
                 <Layers3 className="mb-3 h-5 w-5" style={{ color: brand.color }} />
-                <p className="text-sm font-black text-foreground">{brand.featuredProducts.length} destaques</p>
-                <p className="mt-1 text-xs text-muted-foreground">Linhas principais</p>
+                <p className="text-sm font-black text-foreground">
+                  {new Set(brand.catalogProducts.map((p) => p.category).filter(Boolean)).size} categorias
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">Tipos de produto</p>
               </div>
               <div className="rounded-lg border border-border bg-card p-4">
                 <BookOpen className="mb-3 h-5 w-5" style={{ color: brand.color }} />
@@ -153,9 +155,9 @@ export function BrandPage({ brand, onBack }: BrandPageProps) {
               <span className="h-px w-9" style={{ backgroundColor: `${brand.color}80` }} />
               Linha de produtos
             </div>
-            <h2 className="text-3xl font-black text-foreground">Produtos em destaque</h2>
+            <h2 className="text-3xl font-black text-foreground">Produtos da marca</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Principais itens para análise de mix, exposição e compra comercial.
+              Itens da linha para consulta, exposição e atendimento comercial.
             </p>
           </div>
           <div
@@ -168,7 +170,7 @@ export function BrandPage({ brand, onBack }: BrandPageProps) {
         </div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {brand.featuredProducts.map((product) => (
+          {brand.catalogProducts.map((product) => (
             <article
               key={product.id}
               className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
