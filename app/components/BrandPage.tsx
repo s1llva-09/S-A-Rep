@@ -13,7 +13,7 @@ import {
 import { Brand } from "./data";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ThemeToggle } from "./ThemeToggle";
-import { downloadBrandCatalogPdf } from "./catalogPdf";
+import { downloadBrandCatalogPdf, downloadFileFromUrl } from "./catalogPdf";
 import { getWhatsAppUrl } from "../config";
 
 interface BrandPageProps {
@@ -245,15 +245,14 @@ export function BrandPage({ brand, onBack }: BrandPageProps) {
             </div>
             <div className="flex flex-wrap gap-3">
               {brand.extraCatalogs.map((extra) => (
-                <a
+                <button
                   key={extra.file}
-                  href={extra.file}
-                  download
+                  onClick={() => downloadFileFromUrl(extra.file, `${brand.name}-${extra.label}.pdf`)}
                   className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-bold text-foreground transition-colors hover:bg-secondary cursor-pointer"
                 >
                   <BookOpen className="h-3.5 w-3.5 shrink-0" style={{ color: brand.color }} />
                   {extra.label}
-                </a>
+                </button>
               ))}
             </div>
           </div>

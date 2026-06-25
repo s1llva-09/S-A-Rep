@@ -9,19 +9,38 @@ function safeFileName(value: string) {
     .toLowerCase();
 }
 
-function triggerDownload(url: string, brand: Brand) {
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `catalogo-${safeFileName(brand.name)}.pdf`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+/**
+ * Baixa um arquivo forçando o download (mesmo de outro domínio, como o Supabase).
+ * O atributo `download` é ignorado em links cross-origin, então buscamos o
+ * arquivo como blob e baixamos a partir de uma URL local.
+ */
+export async function downloadFileFromUrl(url: string, filename: string) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const blob = await res.blob();
+    const objUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = objUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(objUrl);
+  } catch {
+    // Se algo falhar (ex: CORS), abre em nova aba como alternativa.
+    window.open(url, "_blank", "noopener");
+  }
+}
+
+async function triggerDownload(url: string, brand: Brand) {
+  await downloadFileFromUrl(url, `catalogo-${safeFileName(brand.name)}.pdf`);
 }
 
 async function tryStaticCatalog(brand: Brand): Promise<boolean> {
-  // 1) PDF vindo do Sanity (CMS), se houver.
+  // 1) PDF vindo do Supabase (CMS), se houver.
   if (brand.mainCatalogUrl) {
-    triggerDownload(brand.mainCatalogUrl, brand);
+    await triggerDownload(brand.mainCatalogUrl, brand);
     return true;
   }
   // 2) PDF estático em /public/catalogs/{id}-catalogo.pdf.
@@ -29,7 +48,7 @@ async function tryStaticCatalog(brand: Brand): Promise<boolean> {
   try {
     const res = await fetch(url, { method: "HEAD" });
     if (res.ok) {
-      triggerDownload(url, brand);
+      await triggerDownload(url, brand);
       return true;
     }
   } catch {}

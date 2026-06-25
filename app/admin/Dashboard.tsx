@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Plus, LogOut, ExternalLink, Trash2, ArrowUp, ArrowDown, Save, Loader2 } from "lucide-react";
+import { toast } from "./toast";
 import { supabase } from "../supabase/client";
 import { BrandRow, ProductRow } from "../supabase/types";
 import {
@@ -7,6 +8,7 @@ import {
   saveBrand,
   saveProduct,
   deleteProductRow,
+  deleteBrandRow,
   uploadToBucket,
   STORAGE,
 } from "./AdminApp";
@@ -14,6 +16,10 @@ import {
 const inputCls =
   "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring";
 const labelCls = "mb-1 block text-xs font-bold text-muted-foreground";
+
+// Limites de tamanho de upload (plano grátis do Supabase aceita até ~50 MB por arquivo).
+const MAX_PDF_MB = 50;
+const MAX_IMG_MB = 25;
 
 export function Dashboard() {
   const [brands, setBrands] = useState<BrandRow[]>([]);
@@ -25,7 +31,8 @@ export function Dashboard() {
     const { brands, products } = await loadAll();
     setBrands(brands);
     setProducts(products);
-    setSelectedId((prev) => prev ?? brands[0]?.id ?? null);
+    // Mantém a seleção se ainda existir; senão cai pra primeira marca.
+    setSelectedId((prev) => (prev && brands.some((b) => b.id === prev) ? prev : brands[0]?.id ?? null));
     setLoading(false);
   };
 
@@ -140,20 +147,33 @@ function BrandEditor({
   const set = (patch: Partial<BrandRow>) => setForm((f) => ({ ...f, ...patch }));
 
   const handleSave = async () => {
+    if (!form.name?.trim()) {
+      toast.error("Dê um nome à marca antes de salvar.");
+      return;
+    }
     setSaving(true);
     try {
       await saveBrand(form);
       await onSaved();
+      toast.success("Marca salva.");
+    } catch {
+      toast.error("Não foi possível salvar a marca. Tente novamente.");
     } finally {
       setSaving(false);
     }
   };
 
+  // Uploads salvam na hora (o arquivo já foi pro storage), evitando perda se sair sem salvar.
   const uploadLogo = async (file: File) => {
     setBusy("logo");
     try {
       const url = await uploadToBucket(STORAGE.images, file);
-      set({ logo_url: url });
+      const next = { ...form, logo_url: url };
+      setForm(next);
+      await saveBrand(next);
+      toast.success("Logo atualizada.");
+    } catch {
+      toast.error("Erro ao enviar a logo.");
     } finally {
       setBusy("");
     }
@@ -163,7 +183,12 @@ function BrandEditor({
     setBusy("catalog");
     try {
       const url = await uploadToBucket(STORAGE.catalogs, file);
-      set({ main_catalog_url: url });
+      const next = { ...form, main_catalog_url: url };
+      setForm(next);
+      await saveBrand(next);
+      toast.success("Catálogo atualizado.");
+    } catch {
+      toast.error("Erro ao enviar o catálogo.");
     } finally {
       setBusy("");
     }
@@ -177,31 +202,54 @@ function BrandEditor({
 
   const addProduct = async () => {
     const id = crypto.randomUUID();
-    await saveProduct({
-      id,
-      brand_id: brand.id,
-      name: "Novo produto",
-      ref: "",
-      description: "",
-      category: "",
-      image_url: null,
-      sort_order: products.length,
-    });
-    await onSaved();
+    try {
+      await saveProduct({
+        id,
+        brand_id: brand.id,
+        name: "Novo produto",
+        ref: "",
+        description: "",
+        category: "",
+        image_url: null,
+        sort_order: products.length,
+      });
+      await onSaved();
+      toast.success("Produto adicionado.");
+    } catch {
+      toast.error("Erro ao adicionar produto.");
+    }
   };
 
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-5 flex items-center justify-between gap-3">
         <h1 className="text-2xl font-black">{form.name || "Marca"}</h1>
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-black text-white hover:bg-red-700 disabled:opacity-60"
-        >
-          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-          Salvar marca
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={async () => {
+              if (!confirm(`Excluir a marca "${form.name}" e TODOS os seus produtos? Esta ação não pode ser desfeita.`)) return;
+              try {
+                await deleteBrandRow(brand.id);
+                await onSaved();
+                toast.success("Marca excluída.");
+              } catch {
+                toast.error("Erro ao excluir a marca.");
+              }
+            }}
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
+          >
+            <Trash2 className="h-4 w-4" />
+            Excluir marca
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-black text-white hover:bg-red-700 disabled:opacity-60"
+          >
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+            Salvar marca
+          </button>
+        </div>
       </div>
 
       <section className="grid gap-4 rounded-xl border border-border bg-card p-5">
@@ -261,7 +309,7 @@ function BrandEditor({
               {form.logo_url && (
                 <img src={form.logo_url} alt="logo" className="h-12 w-12 rounded border border-border bg-white object-contain p-1" />
               )}
-              <FileButton accept="image/*" busy={busy === "logo"} onPick={uploadLogo} label="Trocar logo" />
+              <FileButton accept="image/*" busy={busy === "logo"} onPick={uploadLogo} label="Trocar logo" maxMB={MAX_IMG_MB} />
             </div>
           </div>
           <div>
@@ -272,8 +320,9 @@ function BrandEditor({
                   ver atual
                 </a>
               )}
-              <FileButton accept="application/pdf" busy={busy === "catalog"} onPick={uploadMainCatalog} label="Trocar PDF" />
+              <FileButton accept="application/pdf" busy={busy === "catalog"} onPick={uploadMainCatalog} label="Trocar PDF" maxMB={MAX_PDF_MB} />
             </div>
+            <p className="mt-1 text-xs text-muted-foreground">Tamanho máximo: {MAX_PDF_MB} MB.</p>
           </div>
         </div>
 
@@ -297,6 +346,7 @@ function BrandEditor({
                 <FileButton
                   accept="application/pdf"
                   small
+                  maxMB={MAX_PDF_MB}
                   onPick={async (file) => {
                     const url = await uploadToBucket(STORAGE.catalogs, file);
                     updateExtra(i, { file: url });
@@ -358,10 +408,17 @@ function ProductCard({
   const set = (patch: Partial<ProductRow>) => setForm((f) => ({ ...f, ...patch }));
 
   const save = async () => {
+    if (!form.name?.trim()) {
+      toast.error("Dê um nome ao produto antes de salvar.");
+      return;
+    }
     setSaving(true);
     try {
       await saveProduct(form);
       await onSaved();
+      toast.success("Produto salvo.");
+    } catch {
+      toast.error("Não foi possível salvar o produto.");
     } finally {
       setSaving(false);
     }
@@ -369,24 +426,39 @@ function ProductCard({
 
   const remove = async () => {
     if (!confirm(`Excluir o produto "${form.name}"?`)) return;
-    await deleteProductRow(form.id);
-    await onSaved();
+    try {
+      await deleteProductRow(form.id);
+      await onSaved();
+      toast.success("Produto excluído.");
+    } catch {
+      toast.error("Erro ao excluir o produto.");
+    }
   };
 
   const move = async (dir: -1 | 1) => {
     const idx = siblings.findIndex((s) => s.id === form.id);
     const other = siblings[idx + dir];
     if (!other) return;
-    await saveProduct({ ...form, sort_order: other.sort_order ?? 0 });
-    await saveProduct({ ...other, sort_order: form.sort_order ?? 0 });
-    await onSaved();
+    try {
+      await saveProduct({ ...form, sort_order: other.sort_order ?? 0 });
+      await saveProduct({ ...other, sort_order: form.sort_order ?? 0 });
+      await onSaved();
+    } catch {
+      toast.error("Erro ao reordenar.");
+    }
   };
 
+  // Salva a foto na hora (já está no storage), evitando perda se sair sem salvar.
   const uploadImage = async (file: File) => {
     setBusy(true);
     try {
       const url = await uploadToBucket(STORAGE.images, file);
-      set({ image_url: url });
+      const next = { ...form, image_url: url };
+      setForm(next);
+      await saveProduct(next);
+      toast.success("Foto atualizada.");
+    } catch {
+      toast.error("Erro ao enviar a foto.");
     } finally {
       setBusy(false);
     }
@@ -399,7 +471,7 @@ function ProductCard({
           <div className="h-20 w-20 overflow-hidden rounded-lg border border-border bg-white">
             {form.image_url && <img src={form.image_url} alt={form.name} className="h-full w-full object-contain p-1" />}
           </div>
-          <FileButton accept="image/*" small busy={busy} onPick={uploadImage} label="Foto" />
+          <FileButton accept="image/*" small busy={busy} onPick={uploadImage} label="Foto" maxMB={MAX_IMG_MB} />
         </div>
         <div className="grid flex-1 gap-3 sm:grid-cols-2">
           <div>
@@ -448,12 +520,14 @@ function FileButton({
   label,
   busy,
   small,
+  maxMB,
 }: {
   accept: string;
   onPick: (file: File) => void | Promise<void>;
   label: string;
   busy?: boolean;
   small?: boolean;
+  maxMB?: number;
 }) {
   return (
     <label
@@ -469,8 +543,18 @@ function FileButton({
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) onPick(file);
           e.target.value = "";
+          if (!file) return;
+          if (maxMB && file.size > maxMB * 1024 * 1024) {
+            const mb = (file.size / (1024 * 1024)).toFixed(1);
+            alert(
+              `Este arquivo tem ${mb} MB e ultrapassa o limite de ${maxMB} MB.\n\n` +
+                `Escolha um arquivo menor` +
+                (accept.includes("pdf") ? " (tente comprimir o PDF em ferramentas como o iLovePDF)." : "."),
+            );
+            return;
+          }
+          onPick(file);
         }}
       />
     </label>

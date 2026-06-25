@@ -24,7 +24,7 @@ export interface Brand {
   featuredProducts: Product[];
   catalogProducts: Product[];
   extraCatalogs?: ExtraCatalog[];
-  /** PDF do catálogo principal (vindo do Sanity). Se ausente, usa o estático/gerado. */
+  /** PDF do catálogo principal (vindo do Supabase). Se ausente, usa o estático/gerado. */
   mainCatalogUrl?: string;
 }
 
@@ -114,7 +114,7 @@ const repoolProducts = [
   product("rep-6", "Linha completa Repool", "REP-CAT", "Consulte o catálogo de produtos injetados em borracha e plástico.", "/assets/products/repool-6.jpg", "Catálogo"),
 ];
 
-// Conteúdo de fallback: usado enquanto o Sanity não está configurado
+// Conteúdo de fallback: usado enquanto o Supabase não está configurado
 // ou se a busca no CMS falhar. Mantém o site sempre funcional.
 export const fallbackBrands: Brand[] = [
   {

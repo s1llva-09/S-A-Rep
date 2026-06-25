@@ -4,6 +4,7 @@ import { supabase, isSupabaseConfigured, BUCKETS } from "../supabase/client";
 import { BrandRow, ProductRow } from "../supabase/types";
 import { Login } from "./Login";
 import { Dashboard } from "./Dashboard";
+import { ToastHost } from "./toast";
 
 export default function AdminApp() {
   const [session, setSession] = useState<Session | null>(null);
@@ -40,7 +41,12 @@ export default function AdminApp() {
     return <div className="grid min-h-screen place-items-center text-sm text-muted-foreground">Carregando…</div>;
   }
 
-  return session ? <Dashboard /> : <Login />;
+  return (
+    <>
+      {session ? <Dashboard /> : <Login />}
+      <ToastHost />
+    </>
+  );
 }
 
 // ---- Helpers de Storage/DB compartilhados pelo painel ----
@@ -90,6 +96,13 @@ export async function saveProduct(row: ProductRow) {
 export async function deleteProductRow(id: string) {
   if (!supabase) return;
   const { error } = await supabase.from("products").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteBrandRow(id: string) {
+  if (!supabase) return;
+  // Os produtos são removidos junto (FK on delete cascade no schema).
+  const { error } = await supabase.from("brands").delete().eq("id", id);
   if (error) throw error;
 }
 
