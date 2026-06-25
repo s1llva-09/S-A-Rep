@@ -55,7 +55,6 @@ const PRODUCTS = {
     p("uni-3", "Sistemas de freio", "UNI-FREIO", "Linha voltada para oficinas, lojas e distribuidores.", "/assets/products/unibreq-3.jpg", "Freios"),
     p("uni-4", "Kits de freio", "UNI-KIT", "Combinações para manutenção prática e venda consultiva.", "/assets/products/unibreq-4.jpg", "Kit"),
     p("uni-5", "Sapatas de freio", "UNI-SAP", "Aplicações para motos de uso diário.", IMG.parts, "Sapata"),
-    p("uni-6", "Linha completa Unibreq", "UNI-CAT", "Consulte o catálogo para códigos, modelos e aplicações.", IMG.performance, "Catálogo"),
   ],
   fna: [
     p("fna-1", "Amortecedor Titan 150/160", "FNA-TITAN", "Amortecedor traseiro para reposição direta nas principais motos de trabalho.", "/assets/products/fna-1.jpg", "Amortecedor"),
@@ -81,7 +80,6 @@ const PRODUCTS = {
     p("gau-3", "Relés e sensores", "GAU-REL", "Aplicações para diagnóstico e correção elétrica.", "/assets/products/gauss-rele.webp", "Sensor"),
     p("gau-4", "Bobinas de ignição", "GAU-BOB", "Peças para estabilidade de partida e funcionamento.", "/assets/products/gauss-bobina.webp", "Ignição"),
     p("gau-5", "Linha de iluminação", "GAU-LUZ", "Itens elétricos para reposição e manutenção.", "/assets/products/gauss-lampada.webp", "Iluminação"),
-    p("gau-6", "Linha completa Gauss", "GAU-CAT", "Consulte o catálogo para códigos e aplicações.", "/assets/products/gauss-vela.webp", "Catálogo"),
   ],
   "dura-race": [
     p("dur-1", "Kit de parafusos de carenagem", "DUR-PARCAR", "Kit completo de parafusos para fixação de carenagem nas principais motos.", "/assets/products/dura-race-1.jpg", "Fixação"),
@@ -89,7 +87,6 @@ const PRODUCTS = {
     p("dur-3", "Abraçadeiras e presilhas", "DUR-ABRA", "Abraçadeiras e presilhas para fixação de mangueiras, cabos e chicotes.", "/assets/products/dura-race-3.jpg", "Fixação"),
     p("dur-4", "Grampos de fixação de carenagem", "DUR-GRAMP", "Grampos e clipes para fixação rápida de carenagens e acabamentos.", "/assets/products/dura-race-4.jpg", "Fixação"),
     p("dur-5", "Kit de fixação universal", "DUR-KITUNI", "Sortimento de parafusos, porcas e arruelas para uso geral em oficina.", "/assets/products/dura-race-5.jpg", "Fixação"),
-    p("dur-6", "Linha completa Dura Race", "DUR-CAT", "Catálogo completo e vasto da linha de fixação de motos.", "/assets/products/dura-race-6.jpg", "Catálogo"),
   ],
   repool: [
     p("rep-1", "Coxim do motor", "REP-COXIM", "Coxins injetados em borracha para fixação e amortecimento do motor.", "/assets/products/repool-1.jpg", "Borracha"),
@@ -97,7 +94,6 @@ const PRODUCTS = {
     p("rep-3", "Borrachas e vedações", "REP-VEDA", "Linha de borrachas, coxins e vedações injetadas para diversos modelos.", "/assets/products/repool-3.jpg", "Borracha"),
     p("rep-4", "Buchas e amortecedores de borracha", "REP-BUCHA", "Buchas e batentes injetados em borracha para suspensão e chassi.", "/assets/products/repool-4.jpg", "Borracha"),
     p("rep-5", "Acabamentos e peças plásticas", "REP-PLAS", "Componentes injetados em plástico para acabamento e reposição.", "/assets/products/repool-5.jpg", "Plástico"),
-    p("rep-6", "Linha completa Repool", "REP-CAT", "Consulte o catálogo de produtos injetados em borracha e plástico.", "/assets/products/repool-6.jpg", "Catálogo"),
   ],
 };
 

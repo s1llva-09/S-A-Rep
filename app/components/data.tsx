@@ -64,7 +64,6 @@ const unibreqProducts = [
   product("uni-3", "Sistemas de freio", "UNI-FREIO", "Linha voltada para oficinas, lojas e distribuidores.", "/assets/products/unibreq-3.jpg", "Freios"),
   product("uni-4", "Kits de freio", "UNI-KIT", "Combinações para manutenção prática e venda consultiva.", "/assets/products/unibreq-4.jpg", "Kit"),
   product("uni-5", "Sapatas de freio", "UNI-SAP", "Aplicações para motos de uso diário.", IMG.parts, "Sapata"),
-  product("uni-6", "Linha completa Unibreq", "UNI-CAT", "Consulte o catálogo para códigos, modelos e aplicações.", IMG.performance, "Catálogo"),
 ];
 
 const fnaProducts = [
@@ -93,7 +92,6 @@ const gaussProducts = [
   product("gau-3", "Relés e sensores", "GAU-REL", "Aplicações para diagnóstico e correção elétrica.", "/assets/products/gauss-rele.webp", "Sensor"),
   product("gau-4", "Bobinas de ignição", "GAU-BOB", "Peças para estabilidade de partida e funcionamento.", "/assets/products/gauss-bobina.webp", "Ignição"),
   product("gau-5", "Linha de iluminação", "GAU-LUZ", "Itens elétricos para reposição e manutenção.", "/assets/products/gauss-lampada.webp", "Iluminação"),
-  product("gau-6", "Linha completa Gauss", "GAU-CAT", "Consulte o catálogo para códigos e aplicações.", "/assets/products/gauss-vela.webp", "Catálogo"),
 ];
 
 const duraRaceProducts = [
@@ -102,7 +100,6 @@ const duraRaceProducts = [
   product("dur-3", "Abraçadeiras e presilhas", "DUR-ABRA", "Abraçadeiras e presilhas para fixação de mangueiras, cabos e chicotes.", "/assets/products/dura-race-3.jpg", "Fixação"),
   product("dur-4", "Grampos de fixação de carenagem", "DUR-GRAMP", "Grampos e clipes para fixação rápida de carenagens e acabamentos.", "/assets/products/dura-race-4.jpg", "Fixação"),
   product("dur-5", "Kit de fixação universal", "DUR-KITUNI", "Sortimento de parafusos, porcas e arruelas para uso geral em oficina.", "/assets/products/dura-race-5.jpg", "Fixação"),
-  product("dur-6", "Linha completa Dura Race", "DUR-CAT", "Catálogo completo e vasto da linha de fixação de motos.", "/assets/products/dura-race-6.jpg", "Catálogo"),
 ];
 
 const repoolProducts = [
@@ -111,7 +108,6 @@ const repoolProducts = [
   product("rep-3", "Borrachas e vedações", "REP-VEDA", "Linha de borrachas, coxins e vedações injetadas para diversos modelos.", "/assets/products/repool-3.jpg", "Borracha"),
   product("rep-4", "Buchas e amortecedores de borracha", "REP-BUCHA", "Buchas e batentes injetados em borracha para suspensão e chassi.", "/assets/products/repool-4.jpg", "Borracha"),
   product("rep-5", "Acabamentos e peças plásticas", "REP-PLAS", "Componentes injetados em plástico para acabamento e reposição.", "/assets/products/repool-5.jpg", "Plástico"),
-  product("rep-6", "Linha completa Repool", "REP-CAT", "Consulte o catálogo de produtos injetados em borracha e plástico.", "/assets/products/repool-6.jpg", "Catálogo"),
 ];
 
 // Conteúdo de fallback: usado enquanto o Supabase não está configurado
