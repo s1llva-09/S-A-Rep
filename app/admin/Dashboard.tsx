@@ -11,6 +11,8 @@ import {
   ImagePlus,
   PackageOpen,
   Boxes,
+  Menu,
+  X,
 } from "lucide-react";
 import { toast } from "./toast";
 import { supabase } from "../supabase/client";
@@ -56,6 +58,7 @@ export function Dashboard() {
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [navOpen, setNavOpen] = useState(false); // gaveta no mobile
 
   const refresh = async () => {
     const { brands, products } = await loadAll();
@@ -88,6 +91,7 @@ export function Dashboard() {
     await saveBrand(row);
     await refresh();
     setSelectedId(id);
+    setNavOpen(false);
     toast.success("Marca criada.");
   };
 
@@ -98,8 +102,17 @@ export function Dashboard() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background text-foreground">
-      {/* Sidebar */}
-      <aside className="flex h-full w-64 shrink-0 flex-col border-r border-border bg-card">
+      {/* Backdrop (mobile) */}
+      {navOpen && (
+        <div className="fixed inset-0 z-30 bg-black/40 lg:hidden" onClick={() => setNavOpen(false)} />
+      )}
+
+      {/* Sidebar (gaveta no mobile, fixa no desktop) */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 flex h-full w-64 shrink-0 flex-col border-r border-border bg-card transition-transform duration-200 lg:static lg:translate-x-0 ${
+          navOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
         <div className="flex items-center gap-3 border-b border-border px-4 py-4">
           <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-border bg-white shadow-sm">
             <img src="/assets/sa-logo.png" alt="S&A" className="h-8 w-8 object-contain" />
@@ -108,6 +121,13 @@ export function Dashboard() {
             <p className="truncate text-sm font-black leading-tight">Painel S&A</p>
             <p className="truncate text-xs text-muted-foreground">Conteúdo do site</p>
           </div>
+          <button
+            onClick={() => setNavOpen(false)}
+            className="ml-auto rounded-lg p-1.5 text-muted-foreground hover:bg-secondary lg:hidden"
+            aria-label="Fechar menu"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto px-3 py-4">
@@ -120,7 +140,10 @@ export function Dashboard() {
               return (
                 <button
                   key={b.id}
-                  onClick={() => setSelectedId(b.id)}
+                  onClick={() => {
+                    setSelectedId(b.id);
+                    setNavOpen(false);
+                  }}
                   className={`group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-semibold transition-all ${
                     active
                       ? "bg-secondary text-foreground"
@@ -160,28 +183,43 @@ export function Dashboard() {
         </div>
       </aside>
 
-      {/* Main */}
-      <main className="flex-1 overflow-y-auto">
-        {loading ? (
-          <div className="grid h-full place-items-center text-sm text-muted-foreground">
-            <span className="flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" /> Carregando…
-            </span>
-          </div>
-        ) : selected ? (
-          <BrandEditor key={selected.id} brand={selected} products={brandProducts} onSaved={refresh} />
-        ) : (
-          <div className="grid h-full place-items-center p-6 text-center">
-            <div className="max-w-xs">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary text-muted-foreground">
-                <Boxes className="h-7 w-7" />
-              </div>
-              <p className="text-base font-black text-foreground">Nenhuma marca ainda</p>
-              <p className="mt-1 text-sm text-muted-foreground">Clique em “Nova marca” na barra lateral para começar.</p>
+      {/* Coluna principal */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {/* Topbar (mobile) */}
+        <div className="flex items-center gap-3 border-b border-border bg-card px-4 py-3 lg:hidden">
+          <button
+            onClick={() => setNavOpen(true)}
+            className="rounded-lg p-1.5 text-foreground hover:bg-secondary"
+            aria-label="Abrir menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <img src="/assets/sa-logo.png" alt="S&A" className="h-7 w-7 object-contain" />
+          <span className="font-black">Painel S&A</span>
+        </div>
+
+        <main className="flex-1 overflow-y-auto">
+          {loading ? (
+            <div className="grid h-full place-items-center text-sm text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" /> Carregando…
+              </span>
             </div>
-          </div>
-        )}
-      </main>
+          ) : selected ? (
+            <BrandEditor key={selected.id} brand={selected} products={brandProducts} onSaved={refresh} />
+          ) : (
+            <div className="grid h-full place-items-center p-6 text-center">
+              <div className="max-w-xs">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary text-muted-foreground">
+                  <Boxes className="h-7 w-7" />
+                </div>
+                <p className="text-base font-black text-foreground">Nenhuma marca ainda</p>
+                <p className="mt-1 text-sm text-muted-foreground">Toque no menu e em “Nova marca” para começar.</p>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
@@ -290,13 +328,13 @@ function BrandEditor({
     <>
       {/* Toolbar fixa */}
       <div className="sticky top-0 z-10 border-b border-border bg-card/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-6 py-4">
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex min-w-0 items-center gap-3">
             <span
               className="h-3 w-3 shrink-0 rounded-full"
               style={{ backgroundColor: form.color ?? "#999" }}
             />
-            <h1 className="truncate text-xl font-black tracking-tight">{form.name || "Marca"}</h1>
+            <h1 className="truncate text-lg font-black tracking-tight sm:text-xl">{form.name || "Marca"}</h1>
           </div>
           <div className="flex shrink-0 items-center gap-2">
             <button onClick={handleDelete} className={btnDanger}>
@@ -311,7 +349,7 @@ function BrandEditor({
         </div>
       </div>
 
-      <div className="mx-auto max-w-3xl px-6 py-8">
+      <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
         {/* Identidade */}
         <section className={`${card} p-6`}>
           <SectionLabel>Identidade</SectionLabel>
