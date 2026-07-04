@@ -1,4 +1,4 @@
-import { Headphones, MapPin, MessageCircle } from "lucide-react";
+import { Headphones, Lock, MapPin, MessageCircle } from "lucide-react";
 import { Brand } from "./data";
 import { SITE_CONFIG } from "../config";
 
@@ -74,6 +74,13 @@ export function Footer({ onSelectBrand, brands }: FooterProps) {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {SITE_CONFIG.companyName} Ltda. Todos os direitos reservados.</p>
+          <a
+            href="/admin"
+            className="inline-flex items-center gap-1.5 font-semibold transition-colors hover:text-foreground"
+          >
+            <Lock className="h-3.5 w-3.5" />
+            Admin
+          </a>
         </div>
       </div>
     </footer>
