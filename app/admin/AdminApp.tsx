@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase, isSupabaseConfigured, BUCKETS } from "../supabase/client";
-import { BrandRow, ProductRow } from "../supabase/types";
+import { BrandRow, ContactPersonRow, ProductRow } from "../supabase/types";
 import { Login } from "./Login";
 import { Dashboard } from "./Dashboard";
 import { ToastHost } from "./toast";
@@ -72,13 +72,18 @@ export async function uploadToBucket(bucket: string, file: File): Promise<string
 
 export const STORAGE = BUCKETS;
 
-export async function loadAll(): Promise<{ brands: BrandRow[]; products: ProductRow[] }> {
-  if (!supabase) return { brands: [], products: [] };
-  const [{ data: brands }, { data: products }] = await Promise.all([
+export async function loadAll(): Promise<{ brands: BrandRow[]; products: ProductRow[]; contacts: ContactPersonRow[] }> {
+  if (!supabase) return { brands: [], products: [], contacts: [] };
+  const [{ data: brands }, { data: products }, { data: contacts }] = await Promise.all([
     supabase.from("brands").select("*").order("sort_order", { ascending: true }),
     supabase.from("products").select("*").order("sort_order", { ascending: true }),
+    supabase.from("contact_people").select("*").order("sort_order", { ascending: true }),
   ]);
-  return { brands: (brands as BrandRow[]) ?? [], products: (products as ProductRow[]) ?? [] };
+  return {
+    brands: (brands as BrandRow[]) ?? [],
+    products: (products as ProductRow[]) ?? [],
+    contacts: (contacts as ContactPersonRow[]) ?? [],
+  };
 }
 
 export async function saveBrand(row: BrandRow) {
@@ -90,6 +95,18 @@ export async function saveBrand(row: BrandRow) {
 export async function saveProduct(row: ProductRow) {
   if (!supabase) return;
   const { error } = await supabase.from("products").upsert(row);
+  if (error) throw error;
+}
+
+export async function saveContactPerson(row: ContactPersonRow) {
+  if (!supabase) return;
+  const { error } = await supabase.from("contact_people").upsert(row);
+  if (error) throw error;
+}
+
+export async function deleteContactPerson(id: string) {
+  if (!supabase) return;
+  const { error } = await supabase.from("contact_people").delete().eq("id", id);
   if (error) throw error;
 }
 

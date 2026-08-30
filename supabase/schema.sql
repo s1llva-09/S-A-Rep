@@ -34,11 +34,32 @@ create table if not exists public.products (
 
 create index if not exists products_brand_id_idx on public.products(brand_id);
 
+-- Tabela de pessoas do atendimento
+create table if not exists public.contact_people (
+  id text primary key,
+  name text not null,
+  role text,
+  phone text,
+  phone_display text,
+  image_url text,
+  sort_order int default 0,
+  updated_at timestamptz default now()
+);
+
+create index if not exists contact_people_sort_order_idx on public.contact_people(sort_order);
+
+-- Time de atendimento inicial (o painel /admin edita, adiciona e remove depois).
+insert into public.contact_people (id, name, role, phone, phone_display, sort_order) values
+  ('aline-brandao', 'Aline Brandrão', 'Televendas', '5575992151613', '(75) 99215-1613', 0),
+  ('ana-paula',     'Ana Paula',      'SAC',        '5575992041613', '(75) 99204-1613', 1)
+on conflict (id) do nothing;
+
 -- ============================================================
 -- Segurança (RLS): qualquer um LÊ; só quem está logado ESCREVE
 -- ============================================================
 alter table public.brands enable row level security;
 alter table public.products enable row level security;
+alter table public.contact_people enable row level security;
 
 -- Leitura pública
 drop policy if exists "brands_public_read" on public.brands;
@@ -54,6 +75,13 @@ create policy "brands_auth_write" on public.brands for all
 
 drop policy if exists "products_auth_write" on public.products;
 create policy "products_auth_write" on public.products for all
+  to authenticated using (true) with check (true);
+
+drop policy if exists "contact_people_public_read" on public.contact_people;
+create policy "contact_people_public_read" on public.contact_people for select using (true);
+
+drop policy if exists "contact_people_auth_write" on public.contact_people;
+create policy "contact_people_auth_write" on public.contact_people for all
   to authenticated using (true) with check (true);
 
 -- ============================================================

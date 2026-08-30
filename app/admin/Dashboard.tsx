@@ -13,16 +13,19 @@ import {
   Boxes,
   Menu,
   X,
+  Headphones,
 } from "lucide-react";
 import { toast } from "./toast";
 import { supabase } from "../supabase/client";
-import { BrandRow, ProductRow } from "../supabase/types";
+import { BrandRow, ContactPersonRow, ProductRow } from "../supabase/types";
 import {
   loadAll,
   saveBrand,
   saveProduct,
+  saveContactPerson,
   deleteProductRow,
   deleteBrandRow,
+  deleteContactPerson,
   uploadToBucket,
   STORAGE,
 } from "./AdminApp";
@@ -56,14 +59,17 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 export function Dashboard() {
   const [brands, setBrands] = useState<BrandRow[]>([]);
   const [products, setProducts] = useState<ProductRow[]>([]);
+  const [contacts, setContacts] = useState<ContactPersonRow[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [navOpen, setNavOpen] = useState(false); // gaveta no mobile
+  const [showContacts, setShowContacts] = useState(false); // grupo "Quem atende você"
 
   const refresh = async () => {
-    const { brands, products } = await loadAll();
+    const { brands, products, contacts } = await loadAll();
     setBrands(brands);
     setProducts(products);
+    setContacts(contacts);
     // Mantém a seleção se ainda existir; senão cai pra primeira marca.
     setSelectedId((prev) => (prev && brands.some((b) => b.id === prev) ? prev : brands[0]?.id ?? null));
     setLoading(false);
@@ -91,6 +97,7 @@ export function Dashboard() {
     await saveBrand(row);
     await refresh();
     setSelectedId(id);
+    setShowContacts(false);
     setNavOpen(false);
     toast.success("Marca criada.");
   };
@@ -114,8 +121,8 @@ export function Dashboard() {
         }`}
       >
         <div className="flex items-center gap-3 border-b border-border px-4 py-4">
-          <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-border bg-white shadow-sm">
-            <img src="/assets/sa-logo.png" alt="S&A" className="h-8 w-8 object-contain" />
+          <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border border-border bg-white p-1.5 shadow-sm">
+            <img src="/assets/sa-logo.png" alt="S&A" className="h-full w-full object-contain" />
           </span>
           <div className="min-w-0">
             <p className="truncate text-sm font-black leading-tight">Painel S&A</p>
@@ -142,6 +149,7 @@ export function Dashboard() {
                   key={b.id}
                   onClick={() => {
                     setSelectedId(b.id);
+                    setShowContacts(false);
                     setNavOpen(false);
                   }}
                   className={`group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-semibold transition-all ${
@@ -167,6 +175,27 @@ export function Dashboard() {
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-border px-3 py-2.5 text-sm font-bold text-muted-foreground transition-colors hover:border-red-400/50 hover:bg-secondary/60 hover:text-foreground"
           >
             <Plus className="h-4 w-4" /> Nova marca
+          </button>
+
+          <p className="mb-2 mt-6 px-2 text-[11px] font-black uppercase tracking-wider text-muted-foreground">
+            Atendimento
+          </p>
+          <button
+            onClick={() => {
+              setShowContacts(true);
+              setNavOpen(false);
+            }}
+            className={`group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-semibold transition-all ${
+              showContacts
+                ? "bg-secondary text-foreground"
+                : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
+            }`}
+          >
+            {showContacts && (
+              <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-red-600" />
+            )}
+            <Headphones className="h-4 w-4 shrink-0" />
+            <span className="truncate">Quem atende você</span>
           </button>
         </div>
 
@@ -194,7 +223,7 @@ export function Dashboard() {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <img src="/assets/sa-logo.png" alt="S&A" className="h-7 w-7 object-contain" />
+          <img src="/assets/sa-logo.png" alt="S&A" className="h-7 w-7 object-contain rounded-md bg-white p-1" />
           <span className="font-black">Painel S&A</span>
         </div>
 
@@ -205,6 +234,8 @@ export function Dashboard() {
                 <Loader2 className="h-4 w-4 animate-spin" /> Carregando…
               </span>
             </div>
+          ) : showContacts ? (
+            <ContactPeopleEditor contacts={contacts} onSaved={refresh} />
           ) : selected ? (
             <BrandEditor key={selected.id} brand={selected} products={brandProducts} onSaved={refresh} />
           ) : (
@@ -516,6 +547,217 @@ function BrandEditor({
   );
 }
 
+function ContactPeopleEditor({
+  contacts,
+  onSaved,
+}: {
+  contacts: ContactPersonRow[];
+  onSaved: () => Promise<void>;
+}) {
+  const addContact = async () => {
+    const id = crypto.randomUUID();
+    const row: ContactPersonRow = {
+      id,
+      name: "Nova pessoa",
+      role: "Atendimento",
+      phone: "",
+      phone_display: "",
+      image_url: null,
+      sort_order: contacts.length,
+    };
+
+    try {
+      await saveContactPerson(row);
+      await onSaved();
+      toast.success("Contato adicionado.");
+    } catch {
+      toast.error("Erro ao adicionar contato.");
+    }
+  };
+
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8">
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500/10 text-red-600 dark:text-red-400">
+            <ImagePlus className="h-4 w-4" />
+          </div>
+          <h2 className="text-lg font-black tracking-tight">Quem atende você</h2>
+        </div>
+        <button onClick={addContact} className={btnGhost}>
+          <Plus className="h-4 w-4" /> Novo contato
+        </button>
+      </div>
+
+      <div className="space-y-3">
+        {contacts.length === 0 && (
+          <div className={`${card} grid place-items-center p-8 text-center`}>
+            <p className="text-sm text-muted-foreground">Nenhum contato cadastrado ainda.</p>
+          </div>
+        )}
+
+        {contacts.map((person, idx) => (
+          <ContactPersonCard key={person.id} person={person} isFirst={idx === 0} isLast={idx === contacts.length - 1} siblings={contacts} onSaved={onSaved} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ContactPersonCard({
+  person,
+  isFirst,
+  isLast,
+  siblings,
+  onSaved,
+}: {
+  person: ContactPersonRow;
+  isFirst: boolean;
+  isLast: boolean;
+  siblings: ContactPersonRow[];
+  onSaved: () => Promise<void>;
+}) {
+  const [form, setForm] = useState<ContactPersonRow>(person);
+  const [saving, setSaving] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  const set = (patch: Partial<ContactPersonRow>) => setForm((f) => ({ ...f, ...patch }));
+
+  const save = async () => {
+    if (!form.name?.trim()) {
+      toast.error("Dê um nome ao contato antes de salvar.");
+      return;
+    }
+    setSaving(true);
+    try {
+      await saveContactPerson(form);
+      await onSaved();
+      toast.success("Contato salvo.");
+    } catch {
+      toast.error("Não foi possível salvar o contato.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const remove = async () => {
+    if (!confirm(`Excluir o contato "${form.name}"?`)) return;
+    try {
+      await deleteContactPerson(form.id);
+      await onSaved();
+      toast.success("Contato excluído.");
+    } catch {
+      toast.error("Erro ao excluir o contato.");
+    }
+  };
+
+  const move = async (dir: -1 | 1) => {
+    const idx = siblings.findIndex((s) => s.id === form.id);
+    const other = siblings[idx + dir];
+    if (!other) return;
+    try {
+      await saveContactPerson({ ...form, sort_order: idx + dir });
+      await saveContactPerson({ ...other, sort_order: idx });
+      set({ sort_order: idx + dir });
+      await onSaved();
+    } catch {
+      toast.error("Erro ao reordenar contato.");
+    }
+  };
+
+  const uploadImage = async (file: File) => {
+    setBusy(true);
+    try {
+      const url = await uploadToBucket(STORAGE.images, file);
+      const next = { ...form, image_url: url };
+      setForm(next);
+      await saveContactPerson(next);
+      toast.success("Foto atualizada.");
+    } catch {
+      toast.error("Erro ao enviar a foto.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className={`${card} p-4`}>
+      <div className="flex gap-4">
+        <div className="flex shrink-0 flex-col items-center gap-2">
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-lg border border-border bg-white">
+            {form.image_url ? (
+              <img src={form.image_url} alt={form.name} className="h-full w-full object-cover" />
+            ) : (
+              <span className="text-lg font-black text-foreground">
+                {form.name
+                  .split(" ")
+                  .map((part) => part[0])
+                  .slice(0, 2)
+                  .join("")
+                  .toUpperCase()}
+              </span>
+            )}
+          </div>
+          <FileButton accept="image/*" small busy={busy} onPick={uploadImage} label="Foto" maxMB={MAX_IMG_MB} />
+        </div>
+
+        <div className="grid flex-1 gap-3 sm:grid-cols-2">
+          <div>
+            <label className={labelCls}>Nome</label>
+            <input className={inputCls} value={form.name} onChange={(e) => set({ name: e.target.value })} />
+          </div>
+          <div>
+            <label className={labelCls}>Cargo</label>
+            <input className={inputCls} value={form.role ?? ""} onChange={(e) => set({ role: e.target.value })} />
+          </div>
+          <div>
+            <label className={labelCls}>WhatsApp (somente números)</label>
+            <input className={inputCls} value={form.phone ?? ""} onChange={(e) => set({ phone: e.target.value.replace(/\D/g, "") })} />
+          </div>
+          <div>
+            <label className={labelCls}>Número exibido</label>
+            <input className={inputCls} value={form.phone_display ?? ""} onChange={(e) => set({ phone_display: e.target.value })} />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+        <div className="flex gap-1">
+          <button
+            disabled={isFirst}
+            onClick={() => move(-1)}
+            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-30 disabled:hover:bg-transparent"
+            aria-label="Mover para cima"
+          >
+            <ArrowUp className="h-4 w-4" />
+          </button>
+          <button
+            disabled={isLast}
+            onClick={() => move(1)}
+            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary disabled:opacity-30 disabled:hover:bg-transparent"
+            aria-label="Mover para baixo"
+          >
+            <ArrowDown className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="flex gap-2">
+          <button onClick={remove} className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-bold text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-950/30">
+            <Trash2 className="h-4 w-4" /> Excluir
+          </button>
+          <button
+            onClick={save}
+            disabled={saving}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-4 py-2 text-sm font-black text-background transition-all hover:-translate-y-px active:translate-y-0 disabled:opacity-60 disabled:hover:translate-y-0"
+          >
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ProductCard({
   product,
   isFirst,
@@ -567,8 +809,9 @@ function ProductCard({
     const other = siblings[idx + dir];
     if (!other) return;
     try {
-      await saveProduct({ ...form, sort_order: other.sort_order ?? 0 });
-      await saveProduct({ ...other, sort_order: form.sort_order ?? 0 });
+      await saveProduct({ ...form, sort_order: idx + dir });
+      await saveProduct({ ...other, sort_order: idx });
+      set({ sort_order: idx + dir });
       await onSaved();
     } catch {
       toast.error("Erro ao reordenar.");

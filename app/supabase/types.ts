@@ -24,3 +24,13 @@ export interface ProductRow {
   image_url: string | null;
   sort_order: number | null;
 }
+
+export interface ContactPersonRow {
+  id: string;
+  name: string;
+  role: string | null;
+  phone: string | null;
+  phone_display: string | null;
+  image_url: string | null;
+  sort_order: number | null;
+}

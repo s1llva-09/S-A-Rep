@@ -6,20 +6,19 @@ import {
   CheckCircle2,
   ChevronRight,
   Factory,
-  Headphones,
   MapPin,
   MessageCircle,
   Package,
   ShieldCheck,
   Star,
-  UserRound,
   Users,
   Zap,
 } from "lucide-react";
 import { Brand } from "./data";
 import { ThemeToggle } from "./ThemeToggle";
+import { InternalAreaButton } from "./InternalAreaButton";
 import { Footer } from "./Footer";
-import { SITE_CONFIG, getWhatsAppUrl } from "../config";
+import { SITE_CONFIG, useContactPeople, getWhatsAppUrl } from "../config";
 
 interface AboutPageProps {
   onBack: () => void;
@@ -27,16 +26,12 @@ interface AboutPageProps {
   brands: Brand[];
 }
 
-const TEAM = [
-  { name: "Aline Brandrão", role: "Televendas", icon: Headphones, phone: SITE_CONFIG.televendasNumber, phoneDisplay: SITE_CONFIG.televendasDisplay },
-  { name: "Ana Paula", role: "SAC", icon: UserRound, phone: SITE_CONFIG.sacNumber, phoneDisplay: SITE_CONFIG.sacDisplay },
-];
-
 const STATES = [
   { uf: "BA", name: "Bahia" },
   { uf: "SE", name: "Sergipe" },
   { uf: "AL", name: "Alagoas" },
   { uf: "PE", name: "Pernambuco" },
+  { uf: "CE", name: "Ceará" },
 ];
 
 const VALUES = [
@@ -70,6 +65,7 @@ const COMMERCIAL_POINTS = [
 
 export function AboutPage({ onBack, onSelectBrand, brands }: AboutPageProps) {
   const whatsappUrl = getWhatsAppUrl("Olá! Vim pelo site da S&A Representações e gostaria de mais informações.");
+  const team = useContactPeople();
 
   return (
     <div className="min-h-full bg-background transition-colors duration-300">
@@ -85,6 +81,7 @@ export function AboutPage({ onBack, onSelectBrand, brands }: AboutPageProps) {
           <div className="flex items-center gap-3">
             <span className="hidden text-sm font-black text-foreground sm:block">{SITE_CONFIG.companyName}</span>
             <ThemeToggle />
+            <InternalAreaButton />
           </div>
         </div>
       </div>
@@ -120,7 +117,7 @@ export function AboutPage({ onBack, onSelectBrand, brands }: AboutPageProps) {
               <img
                 src="/assets/sa-logo.png"
                 alt="S&A Representações"
-                className="mx-auto aspect-square w-full object-contain"
+                className="mx-auto aspect-square w-full object-contain p-2"
               />
             </div>
             <div className="mt-6 border-t border-border pt-5">
@@ -152,7 +149,7 @@ export function AboutPage({ onBack, onSelectBrand, brands }: AboutPageProps) {
               <p>
                 Hoje a empresa representa{" "}
                 <strong className="font-bold text-foreground">COMETA, UNIBREQ, FNA, MOTOBATT, GAUSS, DURA RACE e REPOOL</strong>,
-                com presença comercial em BA, SE, AL e PE.
+                com presença comercial em BA, SE, AL, PE e CE.
               </p>
             </div>
           </div>
@@ -211,12 +208,12 @@ export function AboutPage({ onBack, onSelectBrand, brands }: AboutPageProps) {
             </div>
             <h2 className="text-3xl font-black text-foreground">Presença regional no Nordeste</h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              A atuação da S&A é concentrada em quatro estados, com foco em clientes que precisam de atendimento comercial próximo,
+              A atuação da S&A é concentrada em cinco estados, com foco em clientes que precisam de atendimento comercial próximo,
               informação rápida e portfólio adequado para motopeças.
             </p>
             <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-muted-foreground">
               <MapPin className="h-4 w-4 text-red-600" />
-              Bahia, Sergipe, Alagoas e Pernambuco.
+              Bahia, Sergipe, Alagoas, Pernambuco e Ceará.
             </div>
           </div>
 
@@ -246,13 +243,24 @@ export function AboutPage({ onBack, onSelectBrand, brands }: AboutPageProps) {
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {TEAM.map(({ name, role, icon: Icon, phone, phoneDisplay }) => (
-              <div key={name} className="rounded-lg border border-border bg-background p-6 shadow-sm">
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-lg bg-red-500/10 text-red-600 dark:text-red-400">
-                  <Icon className="h-5 w-5" />
+            {team.map(({ id, name, role, phone, phone_display, image_url }) => (
+              <div key={id} className="rounded-lg border border-border bg-background p-6 shadow-sm">
+                <div className="mb-5 flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg bg-red-500/10 text-red-600 dark:text-red-400">
+                  {image_url ? (
+                    <img src={image_url} alt={name} className="h-full w-full object-cover" />
+                  ) : (
+                    <span className="flex h-full w-full items-center justify-center bg-red-500/10 text-base font-black text-red-600 dark:text-red-400">
+                      {name
+                        .split(" ")
+                        .map((part) => part[0])
+                        .slice(0, 2)
+                        .join("")
+                        .toUpperCase()}
+                    </span>
+                  )}
                 </div>
                 <p className="text-lg font-black text-foreground">{name}</p>
-                <p className="mt-1 text-sm font-semibold text-muted-foreground">{role}</p>
+                <p className="mt-1 text-sm font-semibold text-muted-foreground">{role || "Atendimento"}</p>
                 <a
                   href={`https://wa.me/${phone}`}
                   target="_blank"
@@ -260,7 +268,7 @@ export function AboutPage({ onBack, onSelectBrand, brands }: AboutPageProps) {
                   className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-red-600 transition-colors hover:text-red-700 dark:text-red-400"
                 >
                   <MessageCircle className="h-4 w-4" />
-                  {phoneDisplay}
+                  {phone_display || phone || "WhatsApp"}
                 </a>
               </div>
             ))}

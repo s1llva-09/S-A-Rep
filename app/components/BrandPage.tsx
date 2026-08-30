@@ -13,6 +13,7 @@ import {
 import { Brand } from "./data";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { ThemeToggle } from "./ThemeToggle";
+import { InternalAreaButton } from "./InternalAreaButton";
 import { downloadBrandCatalogPdf, downloadFileFromUrl } from "./catalogPdf";
 import { getWhatsAppUrl } from "../config";
 
@@ -41,6 +42,7 @@ export function BrandPage({ brand, onBack }: BrandPageProps) {
           </button>
           <div className="flex items-center gap-2">
             <ThemeToggle />
+            <InternalAreaButton />
             <button
               onClick={handleDownloadCatalog}
               className="hidden items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-bold text-foreground shadow-sm transition-colors hover:bg-secondary sm:flex cursor-pointer"

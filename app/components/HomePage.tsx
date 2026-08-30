@@ -20,6 +20,7 @@ import { Brand } from "./data";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { SITE_CONFIG, getWhatsAppUrl } from "../config";
 import { ThemeToggle } from "./ThemeToggle";
+import { InternalAreaButton } from "./InternalAreaButton";
 import { Footer } from "./Footer";
 
 interface HomePageProps {
@@ -43,7 +44,7 @@ const VALUE_PROPS = [
   {
     icon: Route,
     title: "Cobertura regional",
-    desc: "Atuação estruturada em Bahia, Sergipe, Alagoas e Pernambuco com atendimento comercial próximo.",
+    desc: "Atuação estruturada em Bahia, Sergipe, Alagoas, Pernambuco e Ceará com atendimento comercial próximo.",
   },
   {
     icon: TrendingUp,
@@ -73,7 +74,7 @@ const STEPS = [
   },
 ];
 
-const COVERAGE = ["Bahia", "Sergipe", "Alagoas", "Pernambuco"];
+const COVERAGE = ["Bahia", "Sergipe", "Alagoas", "Pernambuco", "Ceará"];
 
 export function HomePage({ onSelectBrand, onNavigateAbout, brands }: HomePageProps) {
   const scrollToMarcas = () => {
@@ -89,8 +90,8 @@ export function HomePage({ onSelectBrand, onNavigateAbout, brands }: HomePagePro
       <nav className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur-md">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6">
           <button onClick={scrollToMarcas} className="flex min-w-0 items-center gap-3 text-left cursor-pointer">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-white shadow-sm">
-              <img src="/assets/sa-logo.png" alt="S&A Representações" className="h-10 w-10 object-contain" />
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-white p-1.5 shadow-sm">
+              <img src="/assets/sa-logo.png" alt="S&A Representações" className="h-full w-full object-contain" />
             </span>
             <span className="hidden min-w-0 sm:block">
               <span className="block truncate text-sm font-black text-foreground">{SITE_CONFIG.companyName}</span>
@@ -123,6 +124,7 @@ export function HomePage({ onSelectBrand, onNavigateAbout, brands }: HomePagePro
               Comercial
             </a>
             <ThemeToggle />
+            <InternalAreaButton />
           </div>
         </div>
       </nav>
@@ -155,7 +157,7 @@ export function HomePage({ onSelectBrand, onNavigateAbout, brands }: HomePagePro
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               Uma operação comercial preparada para conectar seu negócio a{" "}
               <strong className="font-bold text-foreground">grandes marcas do mercado de motopeças</strong>, com
-              atendimento consultivo, catálogos atualizados e presença em quatro estados.
+              atendimento consultivo, catálogos atualizados e presença em cinco estados.
             </p>
 
             <div className="mt-6 inline-flex items-center gap-3 rounded-lg border border-red-500/20 bg-red-500/5 py-2 pl-2 pr-4">
